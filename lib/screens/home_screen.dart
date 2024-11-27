@@ -1,6 +1,3 @@
-
-
-// screens/home_screen.dart
 import 'package:flutter/material.dart';
 import '../widgets/custom_app_bar.dart';
 import 'projects_screen.dart';
@@ -16,35 +13,42 @@ class HomeScreen extends StatelessWidget {
       appBar: const CustomAppBar(),
       body: SingleChildScrollView(
         child: Column(
-          children: [
+          children: <Widget>[
             // Hero Section
             Container(
               height: 500,
               width: double.infinity,
-              color: Colors.blue[50],
-              child: Center(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(colors: <Color>[
+                  Color(0xFF2563eb),
+                  Color(0xFF1e40af),
+                ]),
+              ),
+              child: const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const CircleAvatar(
-                      radius: 100,
-                      backgroundImage: NetworkImage(
-                        'https://via.placeholder.com/200',
+                  children: <Widget>[
+                    CircleAvatar(
+                      radius: 128,
+                      backgroundColor: Color(0xFF60A5FA),
+                      backgroundImage: AssetImage(
+                        'assets/images/azag.jpg',
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Jane Doe',
+                    SizedBox(height: 20),
+                    Text(
+                      'Agboola Odunayo',
                       style: TextStyle(
-                        fontSize: 36,
+                        fontSize: 40.0,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      'Software Engineer | Flutter Specialist',
+                      'Software Developer | Flutter Specialist | Python Backend',
                       style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.grey[700],
+                        fontSize: 18.0,
+                        color: Colors.white70,
                       ),
                     ),
                   ],
@@ -57,28 +61,26 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 40),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: <Widget>[
                   ElevatedButton(
                     onPressed: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const ProjectsScreen())
-                    ),
+                        MaterialPageRoute(
+                            builder: (_) => const ProjectsScreen())),
                     child: const Text('Projects'),
                   ),
                   const SizedBox(width: 20),
                   ElevatedButton(
                     onPressed: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const SkillsScreen())
-                    ),
+                        MaterialPageRoute(
+                            builder: (_) => const SkillsScreen())),
                     child: const Text('Skills'),
                   ),
                   const SizedBox(width: 20),
                   ElevatedButton(
-                    onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => ContactScreen())
-                    ),
+                    onPressed: () => Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => ContactScreen())),
                     child: const Text('Contact'),
                   ),
                 ],

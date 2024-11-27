@@ -7,29 +7,29 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: const Text('Jane Doe | Portfolio'),
+      title: const Text('Agboola Odunayo | Portfolio'),
       centerTitle: true,
       actions: [
         TextButton(
-          child: const Text('Home', style: TextStyle(color: Colors.white)),
+          child: const Text('Home'),
           onPressed: () {
             Navigator.popUntil(context, (route) => route.isFirst);
           },
         ),
         TextButton(
-          child: const Text('Projects', style: TextStyle(color: Colors.white)),
+          child: const Text('Projects'),
           onPressed: () {
             // Navigate to Projects Screen
           },
         ),
         TextButton(
-          child: const Text('Skills', style: TextStyle(color: Colors.white)),
+          child: const Text('Skills'),
           onPressed: () {
             // Navigate to Skills Screen
           },
         ),
         TextButton(
-          child: const Text('Contact', style: TextStyle(color: Colors.white)),
+          child: const Text('Contact'),
           onPressed: () {
             // Navigate to Contact Screen
           },
