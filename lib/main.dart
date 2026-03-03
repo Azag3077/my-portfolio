@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'sections/apps_section.dart';
+import 'sections/contact_section.dart';
+import 'sections/experience_section.dart';
 import 'sections/hero_section.dart';
+import 'sections/skills_section.dart';
 import 'theme/app_theme.dart';
 
 void main() {
@@ -23,7 +26,6 @@ class _PortfolioAppState extends State<PortfolioApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Azeez Agboola — Flutter Developer',
-      debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: _isDark ? ThemeMode.dark : ThemeMode.light,
@@ -131,17 +133,17 @@ class _PortfolioHomeState extends State<PortfolioHome> {
       backgroundColor: bg,
       body: SelectionArea(
         child: Stack(
-          children: [
+          children: <Widget>[
             // Main scroll
             SingleChildScrollView(
               controller: _scrollCtrl,
               child: Column(
-                children: [
-                  SizedBox(key: _heroKey, child: const HeroSection()),
-                  SizedBox(key: _appsKey, child: const AppsSection()),
-                  // SizedBox(key: _skillsKey, child: const SkillsSection()),
-                  // SizedBox(key: _expKey, child: const ExperienceSection()),
-                  // SizedBox(key: _contactKey, child: const ContactSection()),
+                children: <Widget>[
+                  HeroSection(key: _heroKey),
+                  AppsSection(key: _appsKey),
+                  SkillsSection(key: _skillsKey),
+                  ExperienceSection(key: _expKey),
+                  ContactSection(key: _contactKey),
                   _Footer(isDark: isDark),
                 ],
               ),
@@ -246,7 +248,7 @@ class _LogoText extends StatelessWidget {
             style: TextStyle(color: AppColors.accent1),
           ),
           TextSpan(
-            text: 'zeez.dev',
+            text: r'zeez.dev',
             style: TextStyle(color: textColor),
           ),
         ],

@@ -112,29 +112,33 @@ class _AppCard extends StatelessWidget {
       glowColor: color,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           // Top row
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            spacing: 8.0,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
               Text(project.emoji, style: const TextStyle(fontSize: 40)),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  project.tagline,
-                  style: GoogleFonts.dmSans(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: color,
-                    letterSpacing: 0.5,
+              Flexible(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    project.tagline,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: color,
+                      letterSpacing: 0.5,
+                    ),
                   ),
                 ),
               ),
@@ -175,34 +179,31 @@ class _AppCard extends StatelessWidget {
           const SizedBox(height: 20),
 
           // Stats
-          Row(
-            children: project.stats
-                .map(
-                  (s) => Padding(
-                    padding: const EdgeInsets.only(right: 24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          s.value,
-                          style: GoogleFonts.syne(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w800,
-                            color: textColor,
-                          ),
-                        ),
-                        Text(
-                          s.label,
-                          style: GoogleFonts.dmSans(
-                            fontSize: 11,
-                            color: mutedColor,
-                          ),
-                        ),
-                      ],
+          Wrap(
+            spacing: 24,
+            runSpacing: 8,
+            children: project.stats.map((s) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    s.value,
+                    style: GoogleFonts.syne(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: textColor,
                     ),
                   ),
-                )
-                .toList(),
+                  Text(
+                    s.label,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 11,
+                      color: mutedColor,
+                    ),
+                  ),
+                ],
+              );
+            }).toList(),
           ),
           const SizedBox(height: 20),
 

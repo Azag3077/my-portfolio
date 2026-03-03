@@ -77,7 +77,8 @@ class _ExperienceCard extends StatelessWidget {
         color: cardColor,
         borderRadius: BorderRadius.circular(20),
         border: Border(
-          left: BorderSide(color: color, width: 4),
+          // left: BorderSide(color: color, width: 4),
+          left: BorderSide(color: borderColor, width: 4),
           top: BorderSide(color: borderColor, width: 1.5),
           right: BorderSide(color: borderColor, width: 1.5),
           bottom: BorderSide(color: borderColor, width: 1.5),
@@ -86,7 +87,7 @@ class _ExperienceCard extends StatelessWidget {
       padding: const EdgeInsets.all(32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           // Header row
           LayoutBuilder(
             builder: (_, constraints) {

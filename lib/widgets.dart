@@ -27,7 +27,7 @@ class _AnimatedSectionState extends State<AnimatedSection>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 700),
+      duration: const Duration(milliseconds: 500),
     );
     _opacity = Tween<double>(
       begin: 0,
@@ -49,7 +49,7 @@ class _AnimatedSectionState extends State<AnimatedSection>
     if (_triggered) return;
     _triggered = true;
     Future.delayed(
-      Duration(milliseconds: (widget.delay * 1000).toInt()),
+      Duration(milliseconds: (widget.delay * 700).toInt()),
       () => mounted ? _ctrl.forward() : null,
     );
   }
