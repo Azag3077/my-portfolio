@@ -8,17 +8,6 @@ import '../widgets.dart';
 class ExperienceSection extends StatelessWidget {
   const ExperienceSection({super.key});
 
-  Color _color(int index) {
-    switch (index) {
-      case 0:
-        return AppColors.accent1;
-      case 1:
-        return AppColors.accent2;
-      default:
-        return AppColors.accent3;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
@@ -46,7 +35,7 @@ class ExperienceSection extends StatelessWidget {
                 delay: e.key * 0.1,
                 child: _ExperienceCard(
                   item: e.value,
-                  color: _color(e.key),
+                  color: AppColors.accents(e.key),
                 ),
               ),
             ),
