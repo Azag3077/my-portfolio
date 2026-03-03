@@ -9,24 +9,12 @@ import '../widgets.dart';
 class AppsSection extends StatelessWidget {
   const AppsSection({super.key});
 
-  Color _projectColor(int index) {
-    switch (index) {
-      case 0:
-        return AppColors.accent1;
-      case 1:
-        return AppColors.accent2;
-      default:
-        return const Color(0xFF22C55E);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
     final isWide = w > 900;
 
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 100, horizontal: w * 0.07),
+    return DecoratedBox(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -38,7 +26,7 @@ class AppsSection extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           const AnimatedSection(
             child: SectionHeader(
               eyebrow: 'Live on the stores',
@@ -49,22 +37,18 @@ class AppsSection extends StatelessWidget {
           const SizedBox(height: 56),
           isWide
               ? Row(
+                  spacing: 20,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: projects
                       .asMap()
                       .entries
                       .map(
                         (e) => Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              right: e.key < projects.length - 1 ? 20 : 0,
-                            ),
-                            child: AnimatedSection(
-                              delay: e.key * 0.12,
-                              child: _AppCard(
-                                project: e.value,
-                                color: _projectColor(e.value.colorIndex),
-                              ),
+                          child: AnimatedSection(
+                            delay: e.key * 0.12,
+                            child: _AppCard(
+                              project: e.value,
+                              color: AppColors.accents(e.key),
                             ),
                           ),
                         ),
@@ -72,18 +56,16 @@ class AppsSection extends StatelessWidget {
                       .toList(),
                 )
               : Column(
+                  spacing: 20,
                   children: projects
                       .asMap()
                       .entries
                       .map(
-                        (e) => Padding(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          child: AnimatedSection(
-                            delay: e.key * 0.12,
-                            child: _AppCard(
-                              project: e.value,
-                              color: _projectColor(e.value.colorIndex),
-                            ),
+                        (e) => AnimatedSection(
+                          delay: e.key * 0.12,
+                          child: _AppCard(
+                            project: e.value,
+                            color: AppColors.accents(e.key),
                           ),
                         ),
                       )
@@ -196,10 +178,7 @@ class _AppCard extends StatelessWidget {
                   ),
                   Text(
                     s.label,
-                    style: GoogleFonts.dmSans(
-                      fontSize: 11,
-                      color: mutedColor,
-                    ),
+                    style: GoogleFonts.dmSans(fontSize: 11, color: mutedColor),
                   ),
                 ],
               );
@@ -222,7 +201,7 @@ class _AppCard extends StatelessWidget {
 }
 
 class _LinkChip extends StatefulWidget {
-  final AppLink link;
+  final StoreLink link;
   final Color color;
 
   const _LinkChip({required this.link, required this.color});
@@ -234,33 +213,67 @@ class _LinkChip extends StatefulWidget {
 class _LinkChipState extends State<_LinkChip> {
   bool _hovered = false;
 
+  void _openUrl(String url) => launchUrl(Uri.parse(url)).ignore();
+
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTap: () => launchUrl(Uri.parse(widget.link.url)),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-          decoration: BoxDecoration(
-            color: _hovered
-                ? widget.color.withValues(alpha: 0.2)
-                : Colors.transparent,
-            border: Border.all(
-              color: widget.color.withValues(alpha: 0.4),
-              width: 1.5,
+      child: PopupMenuButton<int>(
+        onSelected: (index) =>
+            _openUrl(widget.link.variants.elementAt(index).url),
+        position: PopupMenuPosition.under,
+        offset: const Offset(0, 8),
+        tooltip: '',
+        color: isDark ? const Color(0xFF1A1A28) : AppColors.lightCardHover,
+        itemBuilder: (context) {
+          return widget.link.variants.asMap().entries.map((entry) {
+            return PopupMenuItem<int>(
+              value: entry.key,
+              child: Text(entry.value.label),
+            );
+          }).toList();
+        },
+        child: GestureDetector(
+          onTap: widget.link.url == null
+              ? null
+              : () => _openUrl(widget.link.url!),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+            decoration: BoxDecoration(
+              color: _hovered
+                  ? widget.color.withValues(alpha: 0.2)
+                  : Colors.transparent,
+              border: Border.all(
+                color: widget.color.withValues(alpha: 0.4),
+                width: 1.5,
+              ),
+              borderRadius: BorderRadius.circular(8),
             ),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(
-            '↗ ${widget.link.label}',
-            style: GoogleFonts.dmSans(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: widget.color,
+            child: Row(
+              spacing: 6.0,
+              mainAxisSize: .min,
+              children: <Widget>[
+                if (widget.link.variants.isEmpty)
+                  Icon(Icons.arrow_outward, size: 16, color: widget.color),
+
+                Text(
+                  widget.link.store.label,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: widget.color,
+                  ),
+                ),
+
+                if (widget.link.variants.isNotEmpty)
+                  Icon(Icons.arrow_drop_down, size: 18, color: widget.color),
+              ],
             ),
           ),
         ),

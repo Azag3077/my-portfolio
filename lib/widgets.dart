@@ -1,21 +1,36 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import 'theme/app_theme.dart';
 
-// ─── ANIMATED SECTION (fade + slide in on scroll) ────────
-class AnimatedSection extends StatefulWidget {
+class AnimatedSection extends StatelessWidget {
+  const AnimatedSection({super.key, required this.child, this.delay = 0});
+
   final Widget child;
   final double delay;
 
-  const AnimatedSection({super.key, required this.child, this.delay = 0});
-
   @override
-  State<AnimatedSection> createState() => _AnimatedSectionState();
+  Widget build(BuildContext context) {
+    if (kDebugMode) return child;
+
+    return _AnimatedSection(delay: delay, child: child);
+  }
 }
 
-class _AnimatedSectionState extends State<AnimatedSection>
+// ─── ANIMATED SECTION (fade + slide in on scroll) ────────
+class _AnimatedSection extends StatefulWidget {
+  final Widget child;
+  final double delay;
+
+  const _AnimatedSection({required this.child, this.delay = 0});
+
+  @override
+  State<_AnimatedSection> createState() => __AnimatedSectionState();
+}
+
+class __AnimatedSectionState extends State<_AnimatedSection>
     with SingleTickerProviderStateMixin {
   late AnimationController _ctrl;
   late Animation<double> _opacity;

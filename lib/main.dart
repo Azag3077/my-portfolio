@@ -129,6 +129,8 @@ class _PortfolioHomeState extends State<PortfolioHome> {
         : AppColors.lightBg.withValues(alpha: 0.92);
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
 
+    final w = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: bg,
       body: SelectionArea(
@@ -137,7 +139,12 @@ class _PortfolioHomeState extends State<PortfolioHome> {
             // Main scroll
             SingleChildScrollView(
               controller: _scrollCtrl,
+              padding: EdgeInsets.symmetric(
+                vertical: 120,
+                horizontal: w * 0.07,
+              ),
               child: Column(
+                spacing: 120,
                 children: <Widget>[
                   HeroSection(
                     key: _heroKey,

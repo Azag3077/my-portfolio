@@ -8,55 +8,37 @@ import '../widgets.dart';
 class SkillsSection extends StatelessWidget {
   const SkillsSection({super.key});
 
-  Color _color(int index) {
-    switch (index) {
-      case 0:
-        return AppColors.accent1;
-      case 1:
-        return AppColors.accent2;
-      default:
-        return AppColors.accent3;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final w = MediaQuery.of(context).size.width;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final bgColor = isDark ? AppColors.darkBg : AppColors.lightBg;
     final cardColor = isDark ? AppColors.darkCard : AppColors.lightCard;
     final mutedColor = isDark ? AppColors.darkMuted : AppColors.lightMuted;
 
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 100, horizontal: w * 0.07),
-      color: bgColor,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          const AnimatedSection(
-            child: SectionHeader(
-              eyebrow: 'What I work with',
-              title: 'Technical Skills',
-              eyebrowColor: AppColors.accent3,
-              center: true,
-            ),
+    return Column(
+      spacing: 56.0,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        const AnimatedSection(
+          child: SectionHeader(
+            eyebrow: 'What I work with',
+            title: 'Technical Skills',
+            eyebrowColor: AppColors.accent3,
+            center: true,
           ),
-          const SizedBox(height: 56),
-          LayoutBuilder(
-            builder: (_, constraints) {
-              final cols = constraints.maxWidth > 700 ? 3 : 2;
-              return _SkillGrid(
-                cols: cols,
-                borderColor: borderColor,
-                cardColor: cardColor,
-                mutedColor: mutedColor,
-                colorFn: _color,
-              );
-            },
-          ),
-        ],
-      ),
+        ),
+        LayoutBuilder(
+          builder: (_, constraints) {
+            final cols = constraints.maxWidth > 700 ? 3 : 2;
+            return _SkillGrid(
+              cols: cols,
+              borderColor: borderColor,
+              cardColor: cardColor,
+              mutedColor: mutedColor,
+            );
+          },
+        ),
+      ],
     );
   }
 }
@@ -66,14 +48,12 @@ class _SkillGrid extends StatelessWidget {
   final Color borderColor;
   final Color cardColor;
   final Color mutedColor;
-  final Color Function(int) colorFn;
 
   const _SkillGrid({
     required this.cols,
     required this.borderColor,
     required this.cardColor,
     required this.mutedColor,
-    required this.colorFn,
   });
 
   @override
@@ -92,7 +72,7 @@ class _SkillGrid extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: rowItems.asMap().entries.map((e) {
               final skill = e.value;
-              final color = colorFn(skill.colorIndex);
+              final color = AppColors.accents(e.key);
 
               // return Expanded(
               //   child: AnimatedSection(

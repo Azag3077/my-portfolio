@@ -6,6 +6,11 @@ class AppColors {
   static const accent1 = Color(0xFFFF6B35); // Orange
   static const accent2 = Color(0xFF00D4AA); // Teal
   static const accent3 = Color(0xFF7B61FF); // Purple
+  static const accent4 = Color(0xFF22C55E); // Green
+
+  static const _accents = [accent1, accent2, accent3, accent4];
+
+  static Color accents(int index) => _accents[index % _accents.length];
 
   // Dark mode
   static const darkBg = Color(0xFF0A0A0F);

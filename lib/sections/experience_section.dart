@@ -46,7 +46,7 @@ class ExperienceSection extends StatelessWidget {
                 delay: e.key * 0.1,
                 child: _ExperienceCard(
                   item: e.value,
-                  color: _color(e.value.colorIndex),
+                  color: _color(e.key),
                 ),
               ),
             ),

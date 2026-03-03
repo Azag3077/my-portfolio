@@ -1,13 +1,4 @@
 class AppProject {
-  final String name;
-  final String tagline;
-  final String description;
-  final List<String> tags;
-  final String emoji;
-  final List<AppLink> links;
-  final List<AppStat> stats;
-  final int colorIndex; // 0=accent1, 1=accent2, 2=green
-
   const AppProject({
     required this.name,
     required this.tagline,
@@ -16,72 +7,152 @@ class AppProject {
     required this.emoji,
     required this.links,
     required this.stats,
-    required this.colorIndex,
   });
+
+  final String name;
+  final String tagline;
+  final String description;
+  final List<String> tags;
+  final String emoji;
+  final List<StoreLink> links;
+  final List<AppStat> stats;
 }
 
-class AppLink {
+// class AppLink {
+//   const AppLink(this.label, this.url);
+//
+//   final String label;
+//   final String url;
+// }
+
+class StoreLink {
+  const StoreLink.url({required this.store, this.url}) : variants = const [];
+
+  const StoreLink.variants({required this.store, this.variants = const []})
+    : url = null;
+
+  final Store store;
+  final List<Variant> variants;
+  final String? url;
+}
+
+class Variant {
+  const Variant({required this.label, required this.url});
+
   final String label;
   final String url;
+}
 
-  const AppLink(this.label, this.url);
+class AppLink2 {
+  const AppLink2({required this.label, required this.url});
+
+  final String label;
+  final String url;
 }
 
 class AppStat {
+  const AppStat(this.label, this.value);
+
   final String label;
   final String value;
-
-  const AppStat(this.label, this.value);
 }
 
 class SkillCategory {
+  const SkillCategory({required this.category, required this.items});
+
   final String category;
   final List<String> items;
-  final int colorIndex;
-
-  const SkillCategory(this.category, this.items, this.colorIndex);
 }
 
 class ExperienceItem {
-  final String role;
-  final String company;
-  final String period;
-  final List<String> points;
-  final int colorIndex;
-
   const ExperienceItem({
     required this.role,
     required this.company,
     required this.period,
     required this.points,
-    required this.colorIndex,
   });
+
+  final String role;
+  final String company;
+  final String period;
+  final List<String> points;
 }
 
 // ─── DATA ────────────────────────────────────────────────
+enum Store {
+  playStore('Play Store'),
+  appStore('App Store');
+
+  final String label;
+
+  const Store(this.label);
+}
+
+void s() {
+  const StoreLink.url(
+    store: Store.playStore,
+    url: 'https://play.google.com/store/apps/details?id=com.fastchop.user',
+  );
+  const StoreLink.variants(
+    store: Store.playStore,
+    variants: [
+      Variant(
+        label: 'User',
+        url: 'https://play.google.com/store/apps/details?id=com.fastchop.user',
+      ),
+    ],
+  );
+}
 
 const List<AppProject> projects = [
   AppProject(
     name: 'Fastchop',
     tagline: 'Food Delivery Ecosystem',
     description:
-        'A full-scale food delivery platform with three cross-platform apps — Customer, Vendor, and Rider. Features live order tracking, restaurant discovery, loyalty points, and real-time delivery coordination.',
+        'A full-scale food delivery platform with '
+        'three cross-platform apps — Customer, Vendor, '
+        'and Rider. Features live order tracking, '
+        'restaurant discovery, loyalty points, '
+        'and real-time delivery coordination.',
     tags: ['Flutter', 'Firebase', 'Maps', 'iOS & Android'],
     emoji: '🍔',
-    colorIndex: 0,
     links: [
-      AppLink(
-        'Play Store (User)',
-        'https://play.google.com/store/apps/details?id=com.fastchop.user',
+      StoreLink.variants(
+        store: Store.playStore,
+        variants: [
+          Variant(
+            label: 'Customer',
+            url:
+                'https://play.google.com/store/apps/details?id=com.fastchop.user',
+          ),
+          Variant(
+            label: 'Vendor',
+            url:
+                'https://play.google.com/store/apps/details?id=com.fastchop.vendor',
+          ),
+          Variant(
+            label: 'Rider',
+            url:
+                'https://play.google.com/store/apps/details?id=com.fastchop.delivery',
+          ),
+        ],
       ),
-      AppLink('App Store (User)', 'https://apps.apple.com/app/id6755609661'),
-      AppLink(
-        'Play Store (Vendor)',
-        'https://play.google.com/store/apps/details?id=com.fastchop.vendor',
-      ),
-      AppLink(
-        'Play Store (Rider)',
-        'https://play.google.com/store/apps/details?id=com.fastchop.delivery',
+      StoreLink.variants(
+        store: Store.appStore,
+        variants: [
+          Variant(
+            label: 'Customer',
+            url: 'https://apps.apple.com/app/id6755609661',
+          ),
+          Variant(
+            label: 'Vendor',
+            url: 'https://apps.apple.com/app/id6755611929',
+          ),
+          Variant(
+            label: 'Rider',
+            url: 'https://apps.apple.com/app/id6755609659',
+          ),
+        ],
       ),
     ],
     stats: [AppStat('Apps Built', '3'), AppStat('Platforms', 'iOS + Android')],
@@ -90,14 +161,21 @@ const List<AppProject> projects = [
     name: 'NaborGo',
     tagline: 'Community Services Marketplace',
     description:
-        'A community-powered app connecting users with verified vendors, artisans, and helpful neighbours. Features real-time geolocation matching, in-app chat, biometric auth, and identity-verified providers.',
+        'A community-powered app connecting users with verified vendors, '
+        'artisans, and helpful neighbours. Features real-time '
+        'geolocation matching, in-app chat, biometric auth, '
+        'and identity-verified providers.',
     tags: ['Flutter', 'Geolocation', 'Firebase Auth', 'Chat'],
     emoji: '🤝',
-    colorIndex: 1,
     links: [
-      AppLink(
-        'Play Store',
-        'https://play.google.com/store/apps/details?id=com.inchperfy.naborgo',
+      StoreLink.url(
+        store: Store.playStore,
+        url:
+            'https://play.google.com/store/apps/details?id=com.inchperfy.naborgo',
+      ),
+      StoreLink.url(
+        store: Store.appStore,
+        url: 'https://apps.apple.com/app/id6757769317',
       ),
     ],
     stats: [AppStat('Rating', '4.6★'), AppStat('Category', 'Community')],
@@ -106,14 +184,16 @@ const List<AppProject> projects = [
     name: 'GreenMarket NG',
     tagline: 'Agricultural Marketplace',
     description:
-        'A buy & sell platform for agro-products in Nigeria, connecting farmers directly with buyers. Users praise it for ease of use and reliability as a one-stop shop for farm shopping.',
+        'A buy & sell platform for agro-products in Nigeria, connecting '
+        'farmers directly with buyers. Users praise it for ease of '
+        'use and reliability as a one-stop shop for farm shopping.',
     tags: ['Flutter', 'E-commerce', 'Firebase', 'Shopping'],
     emoji: '🌿',
-    colorIndex: 2,
     links: [
-      AppLink(
-        'Play Store',
-        'https://play.google.com/store/apps/details?id=com.zagytech.greenmarket.green_market',
+      StoreLink.url(
+        store: Store.playStore,
+        url:
+            'https://play.google.com/store/apps/details?id=com.zagytech.greenmarket.green_market',
       ),
     ],
     stats: [AppStat('Downloads', '500+'), AppStat('Rating', '4.8★')],
@@ -121,34 +201,30 @@ const List<AppProject> projects = [
 ];
 
 const List<SkillCategory> skills = [
-  SkillCategory('Mobile', [
-    'Flutter',
-    'Dart',
-    'iOS',
-    'Android',
-    'Kivy/KivyMD',
-  ], 0),
-  SkillCategory('State Management', ['Riverpod', 'Provider', 'BLoC'], 1),
-  SkillCategory('Backend / BaaS', [
-    'Firebase',
-    'Firestore',
-    'Flask',
-    'REST APIs',
-  ], 2),
-  SkillCategory('Integrations', [
-    'Google Maps',
-    'Push Notifications',
-    'Biometric Auth',
-    'Payments',
-  ], 0),
-  SkillCategory('Python', ['BeautifulSoup', 'PyTesseract', 'Flask'], 1),
-  SkillCategory('Tools', [
-    'Git',
-    'GitHub',
-    'Postman',
-    'VS Code',
-    'Android Studio',
-  ], 2),
+  SkillCategory(
+    category: 'Mobile',
+    items: ['Flutter', 'Dart', 'iOS', 'Android', 'Kivy/KivyMD'],
+  ),
+  SkillCategory(
+    category: 'State Management',
+    items: ['Riverpod', 'Provider', 'BLoC'],
+  ),
+  SkillCategory(
+    category: 'Backend / BaaS',
+    items: ['Firebase', 'Firestore', 'Flask', 'REST APIs'],
+  ),
+  SkillCategory(
+    category: 'Integrations',
+    items: ['Google Maps', 'Push Notifications', 'Biometric Auth', 'Payments'],
+  ),
+  SkillCategory(
+    category: 'Python',
+    items: ['BeautifulSoup', 'PyTesseract', 'Flask'],
+  ),
+  SkillCategory(
+    category: 'Tools',
+    items: ['Git', 'GitHub', 'Postman', 'VS Code', 'Android Studio'],
+  ),
 ];
 
 const List<ExperienceItem> experiences = [
@@ -156,7 +232,6 @@ const List<ExperienceItem> experiences = [
     role: 'Senior Flutter Developer',
     company: 'Freelance',
     period: '2020 – Present',
-    colorIndex: 0,
     points: [
       'Delivered 3 production apps live on Play Store & App Store',
       'Built full food-delivery ecosystem (Fastchop) with 3 cross-platform apps',
@@ -166,9 +241,8 @@ const List<ExperienceItem> experiences = [
   ),
   ExperienceItem(
     role: 'Flutter Developer',
-    company: 'Zoliks Cleaning Service',
+    company: r'Zoliks Cleaning Service',
     period: 'Mar 2023 – Present',
-    colorIndex: 1,
     points: [
       'Built desktop/tablet order management app used daily by 10–20 staff',
       'Implemented dynamic pricing engine for instant cost estimation',
@@ -180,7 +254,6 @@ const List<ExperienceItem> experiences = [
     role: 'Python Developer',
     company: 'Freelance',
     period: '2021 – Present',
-    colorIndex: 2,
     points: [
       'Built web scraping pipelines with BeautifulSoup for business intelligence',
       'Developed OCR tools with PyTesseract for ID & document verification',
