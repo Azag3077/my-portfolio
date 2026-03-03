@@ -25,7 +25,7 @@ class _PortfolioAppState extends State<PortfolioApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Azeez Agboola — Flutter Developer',
+      title: 'Odunayo Agboola — Flutter Developer',
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: _isDark ? ThemeMode.dark : ThemeMode.light,
@@ -139,7 +139,11 @@ class _PortfolioHomeState extends State<PortfolioHome> {
               controller: _scrollCtrl,
               child: Column(
                 children: <Widget>[
-                  HeroSection(key: _heroKey),
+                  HeroSection(
+                    key: _heroKey,
+                    onViewAppsTap: () => _scrollTo(_appsKey),
+                    onGetInTouchTap: () => _scrollTo(_contactKey),
+                  ),
                   AppsSection(key: _appsKey),
                   SkillsSection(key: _skillsKey),
                   ExperienceSection(key: _expKey),
@@ -244,11 +248,11 @@ class _LogoText extends StatelessWidget {
         style: GoogleFonts.syne(fontSize: 20, fontWeight: FontWeight.w800),
         children: [
           const TextSpan(
-            text: 'A',
+            text: 'O',
             style: TextStyle(color: AppColors.accent1),
           ),
           TextSpan(
-            text: r'zeez.dev',
+            text: r'dunayo.dev',
             style: TextStyle(color: textColor),
           ),
         ],

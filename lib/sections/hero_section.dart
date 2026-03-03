@@ -8,7 +8,14 @@ import '../theme/app_theme.dart';
 import '../widgets.dart';
 
 class HeroSection extends StatefulWidget {
-  const HeroSection({super.key});
+  const HeroSection({
+    super.key,
+    required this.onViewAppsTap,
+    required this.onGetInTouchTap,
+  });
+
+  final VoidCallback onViewAppsTap;
+  final VoidCallback onGetInTouchTap;
 
   @override
   State<HeroSection> createState() => _HeroSectionState();
@@ -91,7 +98,6 @@ class _HeroSectionState extends State<HeroSection>
               bottom: 50 - 45 * _blobAnim.value,
               left: -40,
               child: _blob(320, AppColors.accent2, 0.15),
-              // child: _blob(320, AppColors.accent2, 1),
             ),
             Positioned(
               top: 300 + 40 * _blobAnim.value,
@@ -107,151 +113,145 @@ class _HeroSectionState extends State<HeroSection>
             /// Content
             Align(
               alignment: Alignment.centerLeft,
-              child: Container(
-                padding: EdgeInsets.only(
-                  top: 120,
-                  bottom: 80,
-                  left: w * 0.07,
-                  right: w * 0.07,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    // Available badge
-                    AnimatedSection(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Container(
-                            width: 40,
-                            height: 2,
-                            color: AppColors.accent1,
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Available for hire',
-                            style: GoogleFonts.dmSans(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.accent1,
-                              letterSpacing: 2,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Name
-                    AnimatedSection(
-                      delay: 0.1,
-                      child: RichText(
-                        text: TextSpan(
-                          style: GoogleFonts.syne(
-                            fontSize: isWide ? 88 : 52,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: -3,
-                            height: 1.0,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: 'Azeez\n',
-                              style: TextStyle(color: textColor),
-                            ),
-                            const TextSpan(
-                              text: 'Agboola',
-                              style: TextStyle(color: AppColors.accent1),
-                            ),
-                          ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  // Available badge
+                  AnimatedSection(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Container(
+                          width: 40,
+                          height: 2,
+                          color: AppColors.accent1,
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-
-                    // Animated word
-                    AnimatedSection(
-                      delay: 0.15,
-                      child: SizedBox(
-                        height: isWide ? 60 : 40,
-                        child: FadeTransition(
-                          opacity: _wordOpacity,
-                          child: SlideTransition(
-                            position: _wordSlide,
-                            child: GradientText(
-                              _words[_wordIndex],
-                              style: GoogleFonts.syne(
-                                fontSize: isWide ? 42 : 26,
-                                fontWeight: FontWeight.w700,
-                              ),
-                              gradient: const LinearGradient(
-                                colors: [AppColors.accent2, AppColors.accent3],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Tagline
-                    AnimatedSection(
-                      delay: 0.2,
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 560),
-                        child: Text(
-                          '4+ years crafting cross-platform mobile experiences. I build apps that live in the real world — on the Play Store, on the App Store, in users\' hands.',
+                        const SizedBox(width: 12),
+                        Text(
+                          'Available for hire',
                           style: GoogleFonts.dmSans(
-                            fontSize: 18,
-                            color: mutedColor,
-                            height: 1.75,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.accent1,
+                            letterSpacing: 2,
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                    const SizedBox(height: 40),
+                  ),
+                  const SizedBox(height: 24),
 
-                    // CTA buttons
-                    AnimatedSection(
-                      delay: 0.25,
-                      child: Wrap(
-                        spacing: 16,
-                        runSpacing: 12,
-                        children: <Widget>[
-                          _CtaButton(
-                            label: 'View My Apps ↓',
-                            filled: true,
-                            color: AppColors.accent1,
-                            onTap: () {},
+                  // Name
+                  AnimatedSection(
+                    delay: 0.1,
+                    child: RichText(
+                      text: TextSpan(
+                        style: GoogleFonts.syne(
+                          fontSize: isWide ? 88 : 52,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -3,
+                          height: 1.0,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: 'Odunayo\n',
+                            style: TextStyle(color: textColor),
                           ),
-                          _CtaButton(
-                            label: 'Get in Touch',
-                            filled: false,
-                            color: AppColors.accent2,
-                            onTap: () {},
+                          const TextSpan(
+                            text: 'Agboola',
+                            style: TextStyle(color: AppColors.accent1),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 60),
+                  ),
+                  const SizedBox(height: 8),
 
-                    // Stats
-                    AnimatedSection(
-                      delay: 0.3,
-                      child: Wrap(
-                        spacing: 40,
-                        runSpacing: 24,
-                        children: heroStats
-                            .map(
-                              (s) => StatItem(
-                                value: s['value']!,
-                                label: s['label']!,
-                              ),
-                            )
-                            .toList(),
+                  // Animated word
+                  AnimatedSection(
+                    delay: 0.15,
+                    child: SizedBox(
+                      height: isWide ? 60 : 40,
+                      child: FadeTransition(
+                        opacity: _wordOpacity,
+                        child: SlideTransition(
+                          position: _wordSlide,
+                          child: GradientText(
+                            _words[_wordIndex],
+                            style: GoogleFonts.syne(
+                              fontSize: isWide ? 42 : 26,
+                              fontWeight: FontWeight.w700,
+                            ),
+                            gradient: const LinearGradient(
+                              colors: [AppColors.accent2, AppColors.accent3],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Tagline
+                  AnimatedSection(
+                    delay: 0.2,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 560),
+                      child: Text(
+                        '4+ years crafting cross-platform mobile experiences. '
+                        'I build apps that live in the real world — on the '
+                        'Play Store, on the App Store, in users\' hands.',
+                        style: GoogleFonts.dmSans(
+                          fontSize: 18,
+                          color: mutedColor,
+                          height: 1.75,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+
+                  // CTA buttons
+                  AnimatedSection(
+                    delay: 0.25,
+                    child: Wrap(
+                      spacing: 16,
+                      runSpacing: 12,
+                      children: <Widget>[
+                        _CtaButton(
+                          label: 'View My Apps ↓',
+                          filled: true,
+                          color: AppColors.accent1,
+                          onTap: widget.onViewAppsTap,
+                        ),
+                        _CtaButton(
+                          label: 'Get in Touch',
+                          filled: false,
+                          color: AppColors.accent2,
+                          onTap: widget.onGetInTouchTap,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 60),
+
+                  // Stats
+                  AnimatedSection(
+                    delay: 0.3,
+                    child: Wrap(
+                      spacing: 40,
+                      runSpacing: 24,
+                      children: heroStats
+                          .map(
+                            (s) => StatItem(
+                              value: s['value']!,
+                              label: s['label']!,
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
