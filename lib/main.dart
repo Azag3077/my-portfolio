@@ -53,7 +53,6 @@ class PortfolioHome extends StatefulWidget {
 
 class _PortfolioHomeState extends State<PortfolioHome> {
   final _scrollCtrl = ScrollController();
-  bool _navScrolled = false;
   String _activeSection = 'About';
 
   // Section keys for scroll-to
@@ -76,13 +75,7 @@ class _PortfolioHomeState extends State<PortfolioHome> {
     super.dispose();
   }
 
-  void _onScroll() {
-    final offset = _scrollCtrl.offset;
-    setState(() {
-      _navScrolled = offset > 50;
-    });
-    _updateActiveSection();
-  }
+  void _onScroll() => _updateActiveSection();
 
   void _updateActiveSection() {
     final sections = [
@@ -112,8 +105,12 @@ class _PortfolioHomeState extends State<PortfolioHome> {
   void _scrollTo(GlobalKey key) {
     final ctx = key.currentContext;
     if (ctx != null) {
-      Scrollable.ensureVisible(
-        ctx,
+      final box = ctx.findRenderObject() as RenderBox;
+      final position = box.localToGlobal(Offset.zero);
+      final offset = _scrollCtrl.offset + position.dy - kToolbarHeight - 20;
+
+      _scrollCtrl.animateTo(
+        offset,
         duration: const Duration(milliseconds: 600),
         curve: Curves.easeInOut,
       );
@@ -130,9 +127,45 @@ class _PortfolioHomeState extends State<PortfolioHome> {
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
 
     final w = MediaQuery.of(context).size.width;
+    final mutedColor = isDark ? AppColors.darkMuted : AppColors.lightMuted;
+
+    final navItems = [
+      ('About', _heroKey),
+      ('Apps', _appsKey),
+      ('Skills', _skillsKey),
+      ('Experience', _expKey),
+      ('Contact', _contactKey),
+    ];
 
     return Scaffold(
       backgroundColor: bg,
+      appBar: AppBar(
+        title: const _LogoText(),
+        backgroundColor: navBg,
+        surfaceTintColor: navBg,
+        shadowColor: borderColor,
+        actions: <Widget>[
+          Row(
+            spacing: 28.0,
+            children: [
+              if (w > 600)
+                ...navItems.map(
+                  (item) => _NavItem(
+                    label: item.$1,
+                    active: _activeSection == item.$1,
+                    mutedColor: mutedColor,
+                    onTap: () => _scrollTo(item.$2),
+                  ),
+                ),
+
+              // Theme toggle
+              _ThemeToggle(isDark: isDark, onToggle: widget.onToggleTheme),
+              const SizedBox(width: 24),
+            ],
+          ),
+        ],
+      ),
+      extendBodyBehindAppBar: true,
       body: SelectionArea(
         child: Stack(
           children: <Widget>[
@@ -159,82 +192,6 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                 ],
               ),
             ),
-
-            // Sticky navbar
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                decoration: BoxDecoration(
-                  color: _navScrolled ? navBg : Colors.transparent,
-                  border: _navScrolled
-                      ? Border(bottom: BorderSide(color: borderColor, width: 1))
-                      : const Border(),
-                  boxShadow: _navScrolled
-                      ? [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            blurRadius: 20,
-                          ),
-                        ]
-                      : [],
-                ),
-                child: ClipRRect(
-                  child: _navScrolled
-                      ? _buildNavContent(isDark, borderColor)
-                      : _buildNavContent(isDark, borderColor),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavContent(bool isDark, Color borderColor) {
-    final textColor = isDark ? AppColors.darkText : AppColors.lightText;
-    final mutedColor = isDark ? AppColors.darkMuted : AppColors.lightMuted;
-    final w = MediaQuery.of(context).size.width;
-
-    final navItems = [
-      ('About', _heroKey),
-      ('Apps', _appsKey),
-      ('Skills', _skillsKey),
-      ('Experience', _expKey),
-      ('Contact', _contactKey),
-    ];
-
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: w * 0.07),
-      child: SizedBox(
-        height: 64,
-        child: Row(
-          children: [
-            // Logo
-            _LogoText(textColor: textColor),
-            const Spacer(),
-
-            // Nav items (hide on very small screens)
-            if (w > 600)
-              ...navItems.map(
-                (item) => Padding(
-                  padding: const EdgeInsets.only(left: 28),
-                  child: _NavItem(
-                    label: item.$1,
-                    active: _activeSection == item.$1,
-                    mutedColor: mutedColor,
-                    onTap: () => _scrollTo(item.$2),
-                  ),
-                ),
-              ),
-
-            const SizedBox(width: 24),
-
-            // Theme toggle
-            _ThemeToggle(isDark: isDark, onToggle: widget.onToggleTheme),
           ],
         ),
       ),
@@ -244,16 +201,17 @@ class _PortfolioHomeState extends State<PortfolioHome> {
 
 // Logo uses RichText directly:
 class _LogoText extends StatelessWidget {
-  final Color textColor;
-
-  const _LogoText({required this.textColor});
+  const _LogoText();
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? AppColors.darkText : AppColors.lightText;
+
     return RichText(
       text: TextSpan(
         style: GoogleFonts.syne(fontSize: 20, fontWeight: FontWeight.w800),
-        children: [
+        children: <InlineSpan>[
           const TextSpan(
             text: 'O',
             style: TextStyle(color: AppColors.accent1),
