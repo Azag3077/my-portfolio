@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'sections/apps_section.dart';
@@ -8,9 +9,7 @@ import 'sections/hero_section.dart';
 import 'sections/skills_section.dart';
 import 'theme/app_theme.dart';
 
-void main() {
-  runApp(const PortfolioApp());
-}
+void main() => runApp(const PortfolioApp());
 
 class PortfolioApp extends StatefulWidget {
   const PortfolioApp({super.key});
@@ -24,15 +23,22 @@ class _PortfolioAppState extends State<PortfolioApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Odunayo Agboola — Flutter Developer',
-      theme: AppTheme.light(),
-      darkTheme: AppTheme.dark(),
-      themeMode: _isDark ? ThemeMode.dark : ThemeMode.light,
-      home: PortfolioHome(
-        isDark: _isDark,
-        onToggleTheme: () => setState(() => _isDark = !_isDark),
-      ),
+    return ScreenUtilInit(
+      designSize: const Size(1440, 900),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (_, child) {
+        return MaterialApp(
+          title: 'Odunayo Agboola — Flutter Developer',
+          theme: AppTheme.light(),
+          darkTheme: AppTheme.dark(),
+          themeMode: _isDark ? ThemeMode.dark : ThemeMode.light,
+          home: PortfolioHome(
+            isDark: _isDark,
+            onToggleTheme: () => setState(() => _isDark = !_isDark),
+          ),
+        );
+      },
     );
   }
 }

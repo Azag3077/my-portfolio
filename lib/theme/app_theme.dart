@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
@@ -56,67 +57,70 @@ class AppTheme {
     useMaterial3: true,
   );
 
-  static TextTheme _textTheme(Color text, Color muted) => TextTheme(
-    displayLarge: GoogleFonts.syne(
-      fontSize: 88,
-      fontWeight: FontWeight.w800,
-      color: text,
-      letterSpacing: -3,
-    ),
-    displayMedium: GoogleFonts.syne(
-      fontSize: 56,
-      fontWeight: FontWeight.w800,
-      color: text,
-      letterSpacing: -2,
-    ),
-    displaySmall: GoogleFonts.syne(
-      fontSize: 40,
-      fontWeight: FontWeight.w800,
-      color: text,
-      letterSpacing: -1,
-    ),
-    headlineMedium: GoogleFonts.syne(
-      fontSize: 26,
-      fontWeight: FontWeight.w800,
-      color: text,
-    ),
-    headlineSmall: GoogleFonts.syne(
-      fontSize: 22,
-      fontWeight: FontWeight.w700,
-      color: text,
-    ),
-    titleLarge: GoogleFonts.dmSans(
-      fontSize: 18,
-      fontWeight: FontWeight.w700,
-      color: text,
-    ),
-    titleMedium: GoogleFonts.dmSans(
-      fontSize: 15,
-      fontWeight: FontWeight.w600,
-      color: text,
-    ),
-    bodyLarge: GoogleFonts.dmSans(
-      fontSize: 16,
-      fontWeight: FontWeight.w400,
-      color: muted,
-      height: 1.75,
-    ),
-    bodyMedium: GoogleFonts.dmSans(
-      fontSize: 14,
-      fontWeight: FontWeight.w400,
-      color: muted,
-      height: 1.7,
-    ),
-    labelLarge: GoogleFonts.dmSans(
-      fontSize: 13,
-      fontWeight: FontWeight.w700,
-      color: muted,
-      letterSpacing: 2,
-    ),
-    labelMedium: GoogleFonts.dmSans(
-      fontSize: 12,
-      fontWeight: FontWeight.w600,
-      color: muted,
-    ),
-  );
+  static TextTheme _textTheme(Color color, Color muted) => Typography
+      .englishLike2018
+      .apply(fontSizeFactor: 1.0.sp)
+      .copyWith(
+        displayLarge: GoogleFonts.syne(
+          fontSize: 88,
+          fontWeight: FontWeight.w800,
+          color: color,
+          letterSpacing: -3,
+        ),
+        displayMedium: GoogleFonts.syne(
+          fontSize: 56,
+          fontWeight: FontWeight.w800,
+          color: color,
+          letterSpacing: -2,
+        ),
+        displaySmall: GoogleFonts.syne(
+          fontSize: 40,
+          fontWeight: FontWeight.w800,
+          color: color,
+          letterSpacing: -1,
+        ),
+        headlineMedium: GoogleFonts.syne(
+          fontSize: 26,
+          fontWeight: FontWeight.w800,
+          color: color,
+        ),
+        headlineSmall: GoogleFonts.syne(
+          fontSize: 22,
+          fontWeight: FontWeight.w700,
+          color: color,
+        ),
+        titleLarge: GoogleFonts.dmSans(
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+          color: color,
+        ),
+        titleMedium: GoogleFonts.dmSans(
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          color: color,
+        ),
+        bodyLarge: GoogleFonts.dmSans(
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+          color: muted,
+          height: 1.75,
+        ),
+        bodyMedium: GoogleFonts.dmSans(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          color: muted,
+          height: 1.7,
+        ),
+        labelLarge: GoogleFonts.dmSans(
+          fontSize: 13,
+          fontWeight: FontWeight.w700,
+          color: muted,
+          letterSpacing: 2,
+        ),
+        labelMedium: GoogleFonts.dmSans(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: muted,
+        ),
+      );
 }
