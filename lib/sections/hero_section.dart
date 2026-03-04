@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../data.dart';
-import '../theme/app_theme.dart';
+import '../extensions/extensions.dart';
+import '../theme/theme.dart';
 import '../widgets.dart';
 
 class HeroSection extends StatefulWidget {
@@ -83,55 +84,58 @@ class _HeroSectionState extends State<HeroSection>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDark ? AppColors.darkText : AppColors.lightText;
-    final mutedColor = isDark ? AppColors.darkMuted : AppColors.lightMuted;
-    final w = MediaQuery.of(context).size.width;
-    final isWide = w > 900;
-
     return AnimatedBuilder(
       animation: _blobAnim,
       builder: (context, child) {
         return Stack(
           children: <Widget>[
             Positioned(
-              bottom: 50 - 45 * _blobAnim.value,
-              left: -40,
-              child: _blob(320, AppColors.accent2, 0.15),
+              bottom: 50.0.h - 45.0.h * _blobAnim.value,
+              left: -40.0.w,
+              child: _Blob(
+                dimension: 320.0.r,
+                color: AppColors.accent2.withValues(alpha: 0.15),
+              ),
             ),
             Positioned(
               top: 300 + 40 * _blobAnim.value,
-              left: w * 0.3,
-              child: _blob(180, AppColors.accent3, 0.14),
+              left: 0.3.sw(context),
+              child: _Blob(
+                dimension: 180.0.r,
+                color: AppColors.accent3.withValues(alpha: 0.14),
+              ),
             ),
             Positioned(
               top: 80 + 80 * _blobAnim.value,
-              right: w * 0.05,
-              child: _blob(380, AppColors.accent1, 0.15),
+              right: 0.05.sw(context),
+              child: _Blob(
+                dimension: 380.0.r,
+                color: AppColors.accent1.withValues(alpha: 0.15),
+              ),
             ),
 
             /// Content
             Align(
-              alignment: Alignment.centerLeft,
+              alignment: .centerLeft,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: <Widget>[
                   // Available badge
                   AnimatedSection(
                     child: Row(
-                      mainAxisSize: MainAxisSize.min,
+                      mainAxisSize: .min,
                       children: <Widget>[
                         Container(
-                          width: 40,
-                          height: 2,
+                          width: 40.0.w,
+                          height: 2.0.h,
                           color: AppColors.accent1,
                         ),
-                        const SizedBox(width: 12),
+                        12.0.horizontalSpace,
                         Text(
                           'Available for hire',
                           style: GoogleFonts.dmSans(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
+                            fontSize: 14.0.sp,
+                            fontWeight: .w700,
                             color: AppColors.accent1,
                             letterSpacing: 2,
                           ),
@@ -139,7 +143,7 @@ class _HeroSectionState extends State<HeroSection>
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  24.0.verticalSpace,
 
                   // Name
                   AnimatedSection(
@@ -147,15 +151,15 @@ class _HeroSectionState extends State<HeroSection>
                     child: RichText(
                       text: TextSpan(
                         style: GoogleFonts.syne(
-                          fontSize: isWide ? 88 : 52,
-                          fontWeight: FontWeight.w800,
+                          fontSize: (context.isDesktop ? 88 : 52).sp,
+                          fontWeight: .w800,
                           letterSpacing: -3,
                           height: 1.0,
                         ),
-                        children: [
+                        children: <InlineSpan>[
                           TextSpan(
                             text: 'Odunayo\n',
-                            style: TextStyle(color: textColor),
+                            style: TextStyle(color: AppColors.of(context).text),
                           ),
                           const TextSpan(
                             text: 'Agboola',
@@ -165,13 +169,13 @@ class _HeroSectionState extends State<HeroSection>
                       ),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  8.0.verticalSpace,
 
                   // Animated word
                   AnimatedSection(
                     delay: 0.15,
                     child: SizedBox(
-                      height: isWide ? 60 : 40,
+                      height: (context.isDesktop ? 60 : 40).h,
                       child: FadeTransition(
                         opacity: _wordOpacity,
                         child: SlideTransition(
@@ -179,8 +183,8 @@ class _HeroSectionState extends State<HeroSection>
                           child: GradientText(
                             _words[_wordIndex],
                             style: GoogleFonts.syne(
-                              fontSize: isWide ? 42 : 26,
-                              fontWeight: FontWeight.w700,
+                              fontSize: (context.isDesktop ? 42 : 26).sp,
+                              fontWeight: .w700,
                             ),
                             gradient: const LinearGradient(
                               colors: [AppColors.accent2, AppColors.accent3],
@@ -190,7 +194,7 @@ class _HeroSectionState extends State<HeroSection>
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  24.0.verticalSpace,
 
                   // Tagline
                   AnimatedSection(
@@ -202,8 +206,8 @@ class _HeroSectionState extends State<HeroSection>
                         'I build apps that live in the real world — on the '
                         'Play Store, on the App Store, in users\' hands.',
                         style: GoogleFonts.dmSans(
-                          fontSize: 18,
-                          color: mutedColor,
+                          fontSize: 18.0.sp,
+                          color: AppColors.of(context).muted,
                           height: 1.75,
                         ),
                       ),
@@ -215,8 +219,8 @@ class _HeroSectionState extends State<HeroSection>
                   AnimatedSection(
                     delay: 0.25,
                     child: Wrap(
-                      spacing: 16,
-                      runSpacing: 12,
+                      spacing: 16.0.w,
+                      runSpacing: 12.0.h,
                       children: <Widget>[
                         _CtaButton(
                           label: 'View My Apps ↓',
@@ -233,14 +237,14 @@ class _HeroSectionState extends State<HeroSection>
                       ],
                     ),
                   ),
-                  const SizedBox(height: 60),
+                  60.0.verticalSpace,
 
                   // Stats
                   AnimatedSection(
                     delay: 0.3,
                     child: Wrap(
-                      spacing: 40,
-                      runSpacing: 24,
+                      spacing: 40.0.w,
+                      runSpacing: 24.0.h,
                       children: heroStats
                           .map(
                             (s) => StatItem(
@@ -259,18 +263,22 @@ class _HeroSectionState extends State<HeroSection>
       },
     );
   }
+}
 
-  Widget _blob(double size, Color color, double opacity) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: RadialGradient(
-          colors: <Color>[
-            color.withValues(alpha: opacity),
-            Colors.transparent,
-          ],
+class _Blob extends StatelessWidget {
+  const _Blob({required this.dimension, required this.color});
+
+  final double dimension;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.square(
+      dimension: dimension,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: RadialGradient(colors: <Color>[color, Colors.transparent]),
         ),
       ),
     );
@@ -278,17 +286,17 @@ class _HeroSectionState extends State<HeroSection>
 }
 
 class _CtaButton extends StatefulWidget {
-  final String label;
-  final bool filled;
-  final Color color;
-  final VoidCallback onTap;
-
   const _CtaButton({
     required this.label,
     required this.filled,
     required this.color,
     required this.onTap,
   });
+
+  final String label;
+  final bool filled;
+  final Color color;
+  final VoidCallback onTap;
 
   @override
   State<_CtaButton> createState() => _CtaButtonState();
@@ -318,7 +326,10 @@ class _CtaButtonState extends State<_CtaButton> {
           builder: (context, hovered, child) {
             return AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+              padding: EdgeInsets.symmetric(
+                horizontal: 32.0.w,
+                vertical: 14.0.h,
+              ),
               decoration: BoxDecoration(
                 color: widget.filled ? widget.color : Colors.transparent,
                 borderRadius: BorderRadius.circular(50),
@@ -343,8 +354,8 @@ class _CtaButtonState extends State<_CtaButton> {
               child: Text(
                 widget.label,
                 style: GoogleFonts.dmSans(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 15.0.sp,
+                  fontWeight: .w700,
                   color: widget.filled ? Colors.white : widget.color,
                 ),
               ),

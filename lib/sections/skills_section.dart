@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../constants/constants.dart';
 import '../data.dart';
-import '../theme/app_theme.dart';
+import '../extensions/extensions.dart';
+import '../theme/theme.dart';
 import '../widgets.dart';
 
 class SkillsSection extends StatelessWidget {
@@ -10,11 +12,6 @@ class SkillsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final cardColor = isDark ? AppColors.darkCard : AppColors.lightCard;
-    final mutedColor = isDark ? AppColors.darkMuted : AppColors.lightMuted;
-
     return Column(
       spacing: 56.0,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -29,13 +26,8 @@ class SkillsSection extends StatelessWidget {
         ),
         LayoutBuilder(
           builder: (_, constraints) {
-            final cols = constraints.maxWidth > 700 ? 3 : 2;
-            return _SkillGrid(
-              cols: cols,
-              borderColor: borderColor,
-              cardColor: cardColor,
-              mutedColor: mutedColor,
-            );
+            final cols = constraints.maxWidth > BreakPoint.mobile ? 3 : 2;
+            return _SkillGrid(cols: cols);
           },
         ),
       ],
@@ -44,17 +36,9 @@ class SkillsSection extends StatelessWidget {
 }
 
 class _SkillGrid extends StatelessWidget {
-  final int cols;
-  final Color borderColor;
-  final Color cardColor;
-  final Color mutedColor;
+  const _SkillGrid({required this.cols});
 
-  const _SkillGrid({
-    required this.cols,
-    required this.borderColor,
-    required this.cardColor,
-    required this.mutedColor,
-  });
+  final int cols;
 
   @override
   Widget build(BuildContext context) {
@@ -68,8 +52,8 @@ class _SkillGrid extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(bottom: 16),
           child: Row(
-            spacing: 16,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 16.0.w,
+            crossAxisAlignment: .start,
             children: rowItems.asMap().entries.map((e) {
               final skill = e.value;
               final color = AppColors.accents(e.key);
@@ -101,7 +85,7 @@ class _SkillGrid extends StatelessWidget {
               //                 skill.category,
               //                 style: GoogleFonts.syne(
               //                   fontSize: 15,
-              //                   fontWeight: FontWeight.w700,
+              //                   fontWeight: .w700,
               //                   color: color,
               //                 ),
               //               ),
@@ -121,7 +105,7 @@ class _SkillGrid extends StatelessWidget {
               //                       Theme.of(context).brightness ==
               //                           Brightness.dark
               //                           ? AppColors.darkBg
-              //                           : AppColors.lightBg,
+              //                           : AppColors.of(context).bg,
               //                       borderRadius: BorderRadius.circular(
               //                         6,
               //                       ),
@@ -134,7 +118,7 @@ class _SkillGrid extends StatelessWidget {
               //                       item,
               //                       style: GoogleFonts.dmSans(
               //                         fontSize: 12,
-              //                         fontWeight: FontWeight.w500,
+              //                         fontWeight: .w500,
               //                         color: mutedColor,
               //                       ),
               //                     ),
@@ -168,7 +152,7 @@ class _SkillGrid extends StatelessWidget {
               //         //               skill.category,
               //         //               style: GoogleFonts.syne(
               //         //                 fontSize: 15,
-              //         //                 fontWeight: FontWeight.w700,
+              //         //                 fontWeight: .w700,
               //         //                 color: color,
               //         //               ),
               //         //             ),
@@ -188,7 +172,7 @@ class _SkillGrid extends StatelessWidget {
               //         //                     Theme.of(context).brightness ==
               //         //                         Brightness.dark
               //         //                         ? AppColors.darkBg
-              //         //                         : AppColors.lightBg,
+              //         //                         : AppColors.of(context).bg,
               //         //                     borderRadius: BorderRadius.circular(
               //         //                       6,
               //         //                     ),
@@ -201,7 +185,7 @@ class _SkillGrid extends StatelessWidget {
               //         //                     item,
               //         //                     style: GoogleFonts.dmSans(
               //         //                       fontSize: 12,
-              //         //                       fontWeight: FontWeight.w500,
+              //         //                       fontWeight: .w500,
               //         //                       color: mutedColor,
               //         //                     ),
               //         //                   ),
@@ -224,68 +208,69 @@ class _SkillGrid extends StatelessWidget {
                   delay: (i + e.key) * 0.06,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: cardColor,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: borderColor, width: 1.5),
+                      color: AppColors.of(context).card,
+                      borderRadius: BorderRadius.circular(16.0.r),
+                      border: Border.all(
+                        color: AppColors.of(context).border,
+                        width: 1.5.w,
+                      ),
                     ),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(16.0.r),
                       child: Column(
                         children: <Widget>[
                           // Colored top bar
                           Container(
                             decoration: BoxDecoration(
-                              color: cardColor,
+                              color: AppColors.of(context).card,
                               border: Border(
-                                top: BorderSide(color: color, width: 6.0),
+                                top: BorderSide(color: color, width: 6.0.w),
                               ),
                             ),
                           ),
 
                           Padding(
-                            padding: const EdgeInsets.all(22),
+                            padding: .all(22.0.r),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: .start,
                               children: <Widget>[
                                 Text(
                                   skill.category,
                                   style: GoogleFonts.syne(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w700,
+                                    fontSize: 15.0.sp,
+                                    fontWeight: .w700,
                                     color: color,
                                   ),
                                 ),
-                                const SizedBox(height: 14),
+                                14.0.verticalSpace,
                                 Wrap(
-                                  spacing: 8,
-                                  runSpacing: 8,
+                                  spacing: 8.0.w,
+                                  runSpacing: 8.0.h,
                                   children: skill.items
                                       .map(
                                         (item) => Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 5,
+                                          padding: .symmetric(
+                                            horizontal: 12.0.w,
+                                            vertical: 5.0.h,
                                           ),
                                           decoration: BoxDecoration(
-                                            color:
-                                                Theme.of(context).brightness ==
-                                                    Brightness.dark
-                                                ? AppColors.darkBg
-                                                : AppColors.lightBg,
-                                            borderRadius: BorderRadius.circular(
-                                              6,
-                                            ),
-                                            border: Border.all(
-                                              color: borderColor,
-                                              width: 1,
+                                            color: AppColors.of(context).bg,
+                                            borderRadius: .circular(6.0.r),
+                                            border: .all(
+                                              color: AppColors.of(
+                                                context,
+                                              ).border,
+                                              width: 1.0.w,
                                             ),
                                           ),
                                           child: Text(
                                             item,
                                             style: GoogleFonts.dmSans(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w500,
-                                              color: mutedColor,
+                                              fontSize: 12.0.sp,
+                                              fontWeight: .w500,
+                                              color: AppColors.of(
+                                                context,
+                                              ).muted,
                                             ),
                                           ),
                                         ),
@@ -312,13 +297,6 @@ class _SkillGrid extends StatelessWidget {
 }
 
 class AsymmetricBorderPainter extends CustomPainter {
-  final Color mainColor;
-  final Color accentColor;
-  final double mainWidth;
-  final double accentWidth;
-  final BorderSide1 accentSide; // which side gets the accent
-  final double borderRadius;
-
   const AsymmetricBorderPainter({
     required this.mainColor,
     required this.accentColor,
@@ -327,6 +305,13 @@ class AsymmetricBorderPainter extends CustomPainter {
     this.accentSide = BorderSide1.none, // use Top, Left, Right, Bottom
     this.borderRadius = 16,
   });
+
+  final Color mainColor;
+  final Color accentColor;
+  final double mainWidth;
+  final double accentWidth;
+  final BorderSide1 accentSide; // which side gets the accent
+  final double borderRadius;
 
   @override
   void paint(Canvas canvas, Size size) {

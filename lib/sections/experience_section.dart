@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../constants/breakpoints.dart';
 import '../data.dart';
-import '../theme/app_theme.dart';
+import '../extensions/extensions.dart';
+import '../theme/theme.dart';
 import '../widgets.dart';
 
 class ExperienceSection extends StatelessWidget {
@@ -10,12 +12,9 @@ class ExperienceSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bgColor = isDark ? AppColors.darkBg : AppColors.lightBg;
-
     return Column(
-      spacing: 20.0,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 20.0.h,
+      crossAxisAlignment: .start,
       children: <Widget>[
         const AnimatedSection(
           child: SectionHeader(
@@ -24,7 +23,7 @@ class ExperienceSection extends StatelessWidget {
             eyebrowColor: AppColors.accent2,
           ),
         ),
-        const SizedBox(height: 56),
+        56.0.verticalSpace,
         ...experiences.asMap().entries.map(
           (e) => AnimatedSection(
             delay: e.key * 0.1,
@@ -40,62 +39,55 @@ class ExperienceSection extends StatelessWidget {
 }
 
 class _ExperienceCard extends StatelessWidget {
+  const _ExperienceCard({required this.item, required this.color});
+
   final ExperienceItem item;
   final Color color;
 
-  const _ExperienceCard({required this.item, required this.color});
-
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cardColor = isDark ? AppColors.darkCard : AppColors.lightCard;
-    final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textColor = isDark ? AppColors.darkText : AppColors.lightText;
-    final mutedColor = isDark ? AppColors.darkMuted : AppColors.lightMuted;
-    final bgColor = isDark ? AppColors.darkBg : AppColors.lightBg;
+    final border = Border.all(
+      color: AppColors.of(context).border,
+      width: 1.5.r,
+    );
 
     return Container(
       decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(20),
-        border: Border(
-          // left: BorderSide(color: color, width: 4),
-          left: BorderSide(color: borderColor, width: 4),
-          top: BorderSide(color: borderColor, width: 1.5),
-          right: BorderSide(color: borderColor, width: 1.5),
-          bottom: BorderSide(color: borderColor, width: 1.5),
+        color: AppColors.of(context).card,
+        borderRadius: .circular(20.0.r),
+        border: border.copyWith(
+          left: BorderSide(color: border.top.color, width: 4.0.r),
         ),
       ),
-      padding: const EdgeInsets.all(32),
+      padding: .all(32.0.r),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: <Widget>[
           // Header row
           LayoutBuilder(
             builder: (_, constraints) {
-              final isWide = constraints.maxWidth > 500;
               final header = Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                crossAxisAlignment: .start,
+                mainAxisAlignment: .spaceBetween,
+                children: <Widget>[
                   Expanded(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      crossAxisAlignment: .start,
+                      children: <Widget>[
                         Text(
                           item.role,
                           style: GoogleFonts.syne(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w800,
-                            color: textColor,
+                            fontSize: 22.0.sp,
+                            fontWeight: .w800,
+                            color: AppColors.of(context).text,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        4.0.verticalSpace,
                         Text(
                           item.company,
                           style: GoogleFonts.dmSans(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 15.0.sp,
+                            fontWeight: .w600,
                             color: color,
                           ),
                         ),
@@ -103,51 +95,56 @@ class _ExperienceCard extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 6,
-                    ),
+                    padding: .symmetric(horizontal: 16.0.w, vertical: 6.0.h),
                     decoration: BoxDecoration(
-                      color: bgColor,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: borderColor, width: 1),
+                      color: AppColors.of(context).bg,
+                      borderRadius: .circular(20.0.r),
+                      border: .all(
+                        color: AppColors.of(context).border,
+                        width: 1.0.r,
+                      ),
                     ),
                     child: Text(
                       item.period,
                       style: GoogleFonts.dmSans(
-                        fontSize: 13,
-                        color: mutedColor,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 13.0.sp,
+                        color: AppColors.of(context).muted,
+                        fontWeight: .w500,
                       ),
                     ),
                   ),
                 ],
               );
-              return isWide ? header : Column(children: [header]);
+
+              if (constraints.maxWidth > BreakPoint.mobile) {
+                return header;
+              }
+
+              return Column(children: [header]);
             },
           ),
-          const SizedBox(height: 20),
+          20.0.verticalSpace,
 
           // Bullet points
           ...item.points.map(
             (p) => Padding(
-              padding: const EdgeInsets.only(bottom: 10),
+              padding: .only(bottom: 10.0.h),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                crossAxisAlignment: .start,
+                children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(top: 2, right: 12),
+                    padding: .only(top: 2.0.h, right: 12.0.w),
                     child: Text(
                       '▸',
-                      style: TextStyle(color: color, fontSize: 14),
+                      style: TextStyle(color: color, fontSize: 14.0.sp),
                     ),
                   ),
                   Expanded(
                     child: Text(
                       p,
                       style: GoogleFonts.dmSans(
-                        fontSize: 14,
-                        color: mutedColor,
+                        fontSize: 14.0.sp,
+                        color: AppColors.of(context).muted,
                         height: 1.65,
                       ),
                     ),

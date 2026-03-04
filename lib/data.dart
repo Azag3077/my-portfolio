@@ -18,13 +18,6 @@ class AppProject {
   final List<AppStat> stats;
 }
 
-// class AppLink {
-//   const AppLink(this.label, this.url);
-//
-//   final String label;
-//   final String url;
-// }
-
 class StoreLink {
   const StoreLink.url({required this.store, this.url}) : variants = const [];
 

@@ -1,34 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AppColors {
-  // Accents - same in both modes
-  static const accent1 = Color(0xFFFF6B35); // Orange
-  static const accent2 = Color(0xFF00D4AA); // Teal
-  static const accent3 = Color(0xFF7B61FF); // Purple
-  static const accent4 = Color(0xFF22C55E); // Green
-
-  static const _accents = [accent1, accent2, accent3, accent4];
-
-  static Color accents(int index) => _accents[index % _accents.length];
-
-  // Dark mode
-  static const darkBg = Color(0xFF0A0A0F);
-  static const darkCard = Color(0xFF12121A);
-  static const darkCardHover = Color(0xFF1A1A28);
-  static const darkBorder = Color(0xFF2A2A3A);
-  static const darkText = Color(0xFFF0EEF6);
-  static const darkMuted = Color(0xFF8A8A9A);
-
-  // Light mode
-  static const lightBg = Color(0xFFF5F4FF);
-  static const lightCard = Color(0xFFFFFFFF);
-  static const lightCardHover = Color(0xFFF0EEFF);
-  static const lightBorder = Color(0xFFE0DDFF);
-  static const lightText = Color(0xFF0A0A1A);
-  static const lightMuted = Color(0xFF6B6B80);
-}
+import '../extensions/extensions.dart';
+import 'colors.dart';
 
 class AppTheme {
   static ThemeData dark() => ThemeData(
@@ -62,64 +36,64 @@ class AppTheme {
       .apply(fontSizeFactor: 1.0.sp)
       .copyWith(
         displayLarge: GoogleFonts.syne(
-          fontSize: 88,
-          fontWeight: FontWeight.w800,
+          fontSize: 88.0.sp,
+          fontWeight: .w800,
           color: color,
           letterSpacing: -3,
         ),
         displayMedium: GoogleFonts.syne(
-          fontSize: 56,
-          fontWeight: FontWeight.w800,
+          fontSize: 56.0.sp,
+          fontWeight: .w800,
           color: color,
           letterSpacing: -2,
         ),
         displaySmall: GoogleFonts.syne(
-          fontSize: 40,
-          fontWeight: FontWeight.w800,
+          fontSize: 40.0.sp,
+          fontWeight: .w800,
           color: color,
           letterSpacing: -1,
         ),
         headlineMedium: GoogleFonts.syne(
-          fontSize: 26,
-          fontWeight: FontWeight.w800,
+          fontSize: 26.0.sp,
+          fontWeight: .w800,
           color: color,
         ),
         headlineSmall: GoogleFonts.syne(
-          fontSize: 22,
-          fontWeight: FontWeight.w700,
+          fontSize: 22.0.sp,
+          fontWeight: .w700,
           color: color,
         ),
         titleLarge: GoogleFonts.dmSans(
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
+          fontSize: 18.0.sp,
+          fontWeight: .w700,
           color: color,
         ),
         titleMedium: GoogleFonts.dmSans(
-          fontSize: 15,
-          fontWeight: FontWeight.w600,
+          fontSize: 15.0.sp,
+          fontWeight: .w600,
           color: color,
         ),
         bodyLarge: GoogleFonts.dmSans(
-          fontSize: 16,
-          fontWeight: FontWeight.w400,
+          fontSize: 16.0.sp,
+          fontWeight: .w400,
           color: muted,
           height: 1.75,
         ),
         bodyMedium: GoogleFonts.dmSans(
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
+          fontSize: 14.0.sp,
+          fontWeight: .w400,
           color: muted,
           height: 1.7,
         ),
         labelLarge: GoogleFonts.dmSans(
-          fontSize: 13,
-          fontWeight: FontWeight.w700,
+          fontSize: 13.0.sp,
+          fontWeight: .w700,
           color: muted,
           letterSpacing: 2,
         ),
         labelMedium: GoogleFonts.dmSans(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
+          fontSize: 12.0.sp,
+          fontWeight: .w600,
           color: muted,
         ),
       );

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-import 'theme/app_theme.dart';
+import 'extensions/extensions.dart';
+import 'theme/theme.dart';
 
 class AnimatedSection extends StatelessWidget {
   const AnimatedSection({super.key, required this.child, this.delay = 0});
@@ -21,10 +22,10 @@ class AnimatedSection extends StatelessWidget {
 
 // ─── ANIMATED SECTION (fade + slide in on scroll) ────────
 class _AnimatedSection extends StatefulWidget {
+  const _AnimatedSection({required this.child, this.delay = 0});
+
   final Widget child;
   final double delay;
-
-  const _AnimatedSection({required this.child, this.delay = 0});
 
   @override
   State<_AnimatedSection> createState() => __AnimatedSectionState();
@@ -86,22 +87,23 @@ class __AnimatedSectionState extends State<_AnimatedSection>
 
 // ─── HOVER CARD ──────────────────────────────────────────
 class HoverCard extends StatefulWidget {
-  final Widget child;
-  final Color? borderColor;
-  final Color? glowColor;
-  final double borderRadius;
-  final EdgeInsets padding;
-  final VoidCallback? onTap;
-
   const HoverCard({
     super.key,
     required this.child,
     this.borderColor,
     this.glowColor,
-    this.borderRadius = 20,
-    this.padding = const EdgeInsets.all(28),
+    this.borderRadius,
+    this.padding,
     this.onTap,
   });
+
+  final Widget child;
+  final Color? borderColor;
+  final Color? glowColor;
+
+  final double? borderRadius;
+  final EdgeInsets? padding;
+  final VoidCallback? onTap;
 
   @override
   State<HoverCard> createState() => _HoverCardState();
@@ -131,10 +133,8 @@ class _HoverCardState extends State<HoverCard>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bg = isDark ? AppColors.darkCard : AppColors.lightCard;
-    final bgHover = isDark ? AppColors.darkCardHover : AppColors.lightCardHover;
-    final border = isDark ? AppColors.darkBorder : AppColors.lightBorder;
+    final borderRadius = widget.borderRadius ?? 20.0.r;
+    final padding = widget.padding ?? EdgeInsets.all(28.0.r);
 
     return MouseRegion(
       onEnter: (_) {
@@ -153,32 +153,33 @@ class _HoverCardState extends State<HoverCard>
         child: AnimatedBuilder(
           animation: _elevation,
           builder: (_, child) => Transform.translate(
-            offset: Offset(0, -6 * _elevation.value),
+            offset: Offset(0, -6.0.h * _elevation.value),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              padding: widget.padding,
+              padding: padding,
               decoration: BoxDecoration(
-                color: _hovered ? bgHover : bg,
-                borderRadius: BorderRadius.circular(widget.borderRadius),
+                color: _hovered
+                    ? AppColors.of(context).cardHover
+                    : AppColors.of(context).bg,
+                borderRadius: BorderRadius.circular(borderRadius),
                 border: Border.all(
                   color: _hovered
                       ? (widget.borderColor ?? AppColors.accent1).withValues(
                           alpha: 0.5,
                         )
-                      : border,
-                  width: 1.5,
+                      : AppColors.of(context).border,
+                  width: 1.5.r,
                 ),
-                boxShadow: _hovered
-                    ? [
-                        BoxShadow(
-                          color: (widget.glowColor ?? AppColors.accent1)
-                              .withValues(alpha: 0.15),
-                          blurRadius: 40,
-                          spreadRadius: 0,
-                          offset: const Offset(0, 16),
-                        ),
-                      ]
-                    : [],
+                boxShadow: [
+                  if (_hovered)
+                    BoxShadow(
+                      color: (widget.glowColor ?? AppColors.accent1).withValues(
+                        alpha: 0.15,
+                      ),
+                      blurRadius: 40.0.r,
+                      offset: Offset(0, 16.r),
+                    ),
+                ],
               ),
               child: child,
             ),
@@ -192,11 +193,6 @@ class _HoverCardState extends State<HoverCard>
 
 // ─── SECTION HEADER ──────────────────────────────────────
 class SectionHeader extends StatelessWidget {
-  final String eyebrow;
-  final String title;
-  final Color eyebrowColor;
-  final bool center;
-
   const SectionHeader({
     super.key,
     required this.eyebrow,
@@ -205,31 +201,32 @@ class SectionHeader extends StatelessWidget {
     this.center = false,
   });
 
+  final String eyebrow;
+  final String title;
+  final Color eyebrowColor;
+  final bool center;
+
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: center
-          ? CrossAxisAlignment.center
-          : CrossAxisAlignment.start,
-      children: [
+      spacing: 10.0.h,
+      crossAxisAlignment: center ? .center : .start,
+      children: <Widget>[
         Text(
           eyebrow.toUpperCase(),
           style: GoogleFonts.dmSans(
-            fontSize: 13,
-            fontWeight: FontWeight.w700,
+            fontSize: 13.0.sp,
+            fontWeight: .w700,
             color: eyebrowColor,
             letterSpacing: 3,
           ),
         ),
-        const SizedBox(height: 10),
         Text(
           title,
           style: GoogleFonts.syne(
-            fontSize: 48,
-            fontWeight: FontWeight.w800,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? AppColors.darkText
-                : AppColors.lightText,
+            fontSize: 48.0.sp,
+            fontWeight: .w800,
+            color: AppColors.of(context).text,
             letterSpacing: -1.5,
           ),
         ),
@@ -240,30 +237,30 @@ class SectionHeader extends StatelessWidget {
 
 // ─── PILL TAG ─────────────────────────────────────────────
 class PillTag extends StatelessWidget {
-  final String label;
-  final Color color;
-  final double fontSize;
-
   const PillTag({
     super.key,
     required this.label,
     required this.color,
-    this.fontSize = 12,
+    this.fontSize,
   });
+
+  final String label;
+  final Color color;
+  final double? fontSize;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: .symmetric(horizontal: 10.0.w, vertical: 4.0.h),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(6.0.r),
       ),
       child: Text(
         label,
         style: GoogleFonts.dmSans(
-          fontSize: fontSize,
-          fontWeight: FontWeight.w600,
+          fontSize: fontSize ?? 12.0.sp,
+          fontWeight: .w600,
           color: color,
         ),
       ),
@@ -273,16 +270,16 @@ class PillTag extends StatelessWidget {
 
 // ─── GRADIENT TEXT ────────────────────────────────────────
 class GradientText extends StatelessWidget {
-  final String text;
-  final TextStyle style;
-  final Gradient gradient;
-
   const GradientText(
     this.text, {
     super.key,
     required this.style,
     required this.gradient,
   });
+
+  final String text;
+  final TextStyle style;
+  final Gradient gradient;
 
   @override
   Widget build(BuildContext context) {
@@ -298,31 +295,33 @@ class GradientText extends StatelessWidget {
 
 // ─── ANIMATED COUNTER / STAT ─────────────────────────────
 class StatItem extends StatelessWidget {
+  const StatItem({super.key, required this.value, required this.label});
+
   final String value;
   final String label;
 
-  const StatItem({super.key, required this.value, required this.label});
-
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDark ? AppColors.darkText : AppColors.lightText;
-    final mutedColor = isDark ? AppColors.darkMuted : AppColors.lightMuted;
-
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      spacing: 4.0.h,
+      crossAxisAlignment: .start,
+      children: <Widget>[
         Text(
           value,
           style: GoogleFonts.syne(
-            fontSize: 32,
-            fontWeight: FontWeight.w800,
-            color: textColor,
+            fontSize: 32.0.sp,
+            fontWeight: .w800,
+            color: AppColors.of(context).text,
             height: 1,
           ),
         ),
-        const SizedBox(height: 4),
-        Text(label, style: GoogleFonts.dmSans(fontSize: 13, color: mutedColor)),
+        Text(
+          label,
+          style: GoogleFonts.dmSans(
+            fontSize: 13.0.sp,
+            color: AppColors.of(context).muted,
+          ),
+        ),
       ],
     );
   }
@@ -330,16 +329,16 @@ class StatItem extends StatelessWidget {
 
 // ─── HOVER LINK BUTTON ───────────────────────────────────
 class HoverLinkButton extends StatefulWidget {
-  final String label;
-  final String url;
-  final Color color;
-
   const HoverLinkButton({
     super.key,
     required this.label,
     required this.url,
     required this.color,
   });
+
+  final String label;
+  final String url;
+  final Color color;
 
   @override
   State<HoverLinkButton> createState() => _HoverLinkButtonState();
@@ -360,22 +359,22 @@ class _HoverLinkButtonState extends State<HoverLinkButton> {
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+          padding: .symmetric(horizontal: 14.0.w, vertical: 7.0.h),
           decoration: BoxDecoration(
             color: _hovered
                 ? widget.color.withValues(alpha: 0.2)
                 : Colors.transparent,
             border: Border.all(
               color: widget.color.withValues(alpha: 0.4),
-              width: 1.5,
+              width: 1.5.r,
             ),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(8.0.r),
           ),
           child: Text(
             '↗ ${widget.label}',
             style: GoogleFonts.dmSans(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
+              fontSize: 13.0.sp,
+              fontWeight: .w700,
               color: widget.color,
             ),
           ),

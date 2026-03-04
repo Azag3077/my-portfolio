@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'extensions/extensions.dart';
 import 'sections/apps_section.dart';
 import 'sections/contact_section.dart';
 import 'sections/experience_section.dart';
 import 'sections/hero_section.dart';
 import 'sections/skills_section.dart';
-import 'theme/app_theme.dart';
+import 'theme/theme.dart';
 
 void main() => runApp(const PortfolioApp());
 
@@ -23,22 +23,15 @@ class _PortfolioAppState extends State<PortfolioApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(1440, 900),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (_, child) {
-        return MaterialApp(
-          title: 'Odunayo Agboola — Flutter Developer',
-          theme: AppTheme.light(),
-          darkTheme: AppTheme.dark(),
-          themeMode: _isDark ? ThemeMode.dark : ThemeMode.light,
-          home: PortfolioHome(
-            isDark: _isDark,
-            onToggleTheme: () => setState(() => _isDark = !_isDark),
-          ),
-        );
-      },
+    return MaterialApp(
+      title: 'Odunayo Agboola — Flutter Developer',
+      theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
+      themeMode: _isDark ? ThemeMode.dark : ThemeMode.light,
+      home: PortfolioHome(
+        isDark: _isDark,
+        onToggleTheme: () => setState(() => _isDark = !_isDark),
+      ),
     );
   }
 }
@@ -125,15 +118,8 @@ class _PortfolioHomeState extends State<PortfolioHome> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = widget.isDark;
-    final bg = isDark ? AppColors.darkBg : AppColors.lightBg;
-    final navBg = isDark
-        ? AppColors.darkBg.withValues(alpha: 0.92)
-        : AppColors.lightBg.withValues(alpha: 0.92);
-    final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-
-    final w = MediaQuery.of(context).size.width;
-    final mutedColor = isDark ? AppColors.darkMuted : AppColors.lightMuted;
+    final bg = AppColors.of(context).bg;
+    final navBg = bg.withValues(alpha: 0.92);
 
     final navItems = [
       ('About', _heroKey),
@@ -149,24 +135,23 @@ class _PortfolioHomeState extends State<PortfolioHome> {
         title: const _LogoText(),
         backgroundColor: navBg,
         surfaceTintColor: navBg,
-        shadowColor: borderColor,
+        shadowColor: AppColors.of(context).border,
         actions: <Widget>[
           Row(
-            spacing: 28.0,
-            children: [
-              if (w > 600)
+            spacing: 28.0.w,
+            children: <Widget>[
+              if (!context.isMobile)
                 ...navItems.map(
                   (item) => _NavItem(
                     label: item.$1,
                     active: _activeSection == item.$1,
-                    mutedColor: mutedColor,
                     onTap: () => _scrollTo(item.$2),
                   ),
                 ),
 
               // Theme toggle
-              _ThemeToggle(isDark: isDark, onToggle: widget.onToggleTheme),
-              const SizedBox(width: 24),
+              _ThemeToggle(onToggle: widget.onToggleTheme),
+              24.0.horizontalSpace,
             ],
           ),
         ],
@@ -178,12 +163,12 @@ class _PortfolioHomeState extends State<PortfolioHome> {
             // Main scroll
             SingleChildScrollView(
               controller: _scrollCtrl,
-              padding: EdgeInsets.symmetric(
-                vertical: 120,
-                horizontal: w * 0.07,
+              padding: .symmetric(
+                vertical: 120.0.h,
+                horizontal: .07.sw(context),
               ),
               child: Column(
-                spacing: 120,
+                spacing: 120.0.h,
                 children: <Widget>[
                   HeroSection(
                     key: _heroKey,
@@ -194,7 +179,7 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                   SkillsSection(key: _skillsKey),
                   ExperienceSection(key: _expKey),
                   ContactSection(key: _contactKey),
-                  _Footer(isDark: isDark),
+                  const _Footer(),
                 ],
               ),
             ),
@@ -211,12 +196,9 @@ class _LogoText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDark ? AppColors.darkText : AppColors.lightText;
-
     return RichText(
       text: TextSpan(
-        style: GoogleFonts.syne(fontSize: 20, fontWeight: FontWeight.w800),
+        style: GoogleFonts.syne(fontSize: 20.0.sp, fontWeight: .w800),
         children: <InlineSpan>[
           const TextSpan(
             text: 'O',
@@ -224,7 +206,7 @@ class _LogoText extends StatelessWidget {
           ),
           TextSpan(
             text: r'dunayo.dev',
-            style: TextStyle(color: textColor),
+            style: TextStyle(color: AppColors.of(context).text),
           ),
         ],
       ),
@@ -233,17 +215,15 @@ class _LogoText extends StatelessWidget {
 }
 
 class _NavItem extends StatefulWidget {
-  final String label;
-  final bool active;
-  final Color mutedColor;
-  final VoidCallback onTap;
-
   const _NavItem({
     required this.label,
     required this.active,
-    required this.mutedColor,
     required this.onTap,
   });
+
+  final String label;
+  final bool active;
+  final VoidCallback onTap;
 
   @override
   State<_NavItem> createState() => _NavItemState();
@@ -254,9 +234,6 @@ class _NavItemState extends State<_NavItem> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDark ? AppColors.darkText : AppColors.lightText;
-
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hovered = true),
@@ -266,13 +243,13 @@ class _NavItemState extends State<_NavItem> {
         child: AnimatedDefaultTextStyle(
           duration: const Duration(milliseconds: 200),
           style: GoogleFonts.dmSans(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
+            fontSize: 14.0.sp,
+            fontWeight: .w500,
             color: widget.active
                 ? AppColors.accent1
                 : _hovered
-                ? textColor
-                : widget.mutedColor,
+                ? AppColors.of(context).text
+                : AppColors.of(context).muted,
           ),
           child: Text(widget.label),
         ),
@@ -282,10 +259,9 @@ class _NavItemState extends State<_NavItem> {
 }
 
 class _ThemeToggle extends StatefulWidget {
-  final bool isDark;
-  final VoidCallback onToggle;
+  const _ThemeToggle({required this.onToggle});
 
-  const _ThemeToggle({required this.isDark, required this.onToggle});
+  final VoidCallback onToggle;
 
   @override
   State<_ThemeToggle> createState() => _ThemeToggleState();
@@ -315,36 +291,37 @@ class _ThemeToggleState extends State<_ThemeToggle>
     super.dispose();
   }
 
+  void _onToggle() {
+    widget.onToggle();
+    if (context.isDark) {
+      _ctrl.forward();
+    } else {
+      _ctrl.reverse();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final cardColor = isDark ? AppColors.darkCard : AppColors.lightCard;
-
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () {
-          widget.onToggle();
-          if (widget.isDark) {
-            _ctrl.forward();
-          } else {
-            _ctrl.reverse();
-          }
-        },
+        onTap: _onToggle,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.all(8),
+          padding: EdgeInsets.all(8.0.r),
           decoration: BoxDecoration(
-            color: cardColor,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: borderColor, width: 1.5),
+            color: AppColors.of(context).card,
+            borderRadius: BorderRadius.circular(10.0.r),
+            border: Border.all(
+              color: AppColors.of(context).border,
+              width: 1.5.w,
+            ),
           ),
           child: RotationTransition(
             turns: _rotation,
             child: Text(
-              widget.isDark ? '☀️' : '🌙',
-              style: const TextStyle(fontSize: 18),
+              context.isDark ? '☀️' : '🌙',
+              style: TextStyle(fontSize: 18.sp),
             ),
           ),
         ),
@@ -354,24 +331,25 @@ class _ThemeToggleState extends State<_ThemeToggle>
 }
 
 class _Footer extends StatelessWidget {
-  final bool isDark;
-
-  const _Footer({required this.isDark});
+  const _Footer();
 
   @override
   Widget build(BuildContext context) {
-    final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final mutedColor = isDark ? AppColors.darkMuted : AppColors.lightMuted;
-
     return Container(
-      padding: const EdgeInsets.all(32),
+      padding: EdgeInsets.all(32.0.r),
       decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: borderColor, width: 1)),
+        border: Border(
+          top: BorderSide(color: AppColors.of(context).border, width: 1.0.w),
+        ),
       ),
       child: Center(
         child: Text(
-          '© 2026 Azeez Agboola Odunayo · Built with Flutter-level precision 🚀',
-          style: GoogleFonts.dmSans(fontSize: 13, color: mutedColor),
+          '© 2026 Azeez Agboola Odunayo · '
+          'Built with Flutter-level precision 🚀',
+          style: GoogleFonts.dmSans(
+            fontSize: 13.0.sp,
+            color: AppColors.of(context).muted,
+          ),
         ),
       ),
     );
