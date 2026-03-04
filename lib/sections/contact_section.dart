@@ -52,116 +52,110 @@ class _ContactSectionState extends State<ContactSection> {
 
   @override
   Widget build(BuildContext context) {
-    final w = MediaQuery.of(context).size.width;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bgColor = isDark ? AppColors.darkBg : AppColors.lightBg;
 
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 100, horizontal: w * 0.07),
-      color: bgColor,
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 700),
-          child: Column(
-            children: [
-              const AnimatedSection(
-                child: SectionHeader(
-                  eyebrow: 'Let\'s work together',
-                  title: 'Get in Touch',
-                  eyebrowColor: AppColors.accent1,
-                  center: true,
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 700),
+        child: Column(
+          children: <Widget>[
+            const AnimatedSection(
+              child: SectionHeader(
+                eyebrow: 'Let\'s work together',
+                title: 'Get in Touch',
+                eyebrowColor: AppColors.accent1,
+                center: true,
+              ),
+            ),
+            const SizedBox(height: 16),
+            AnimatedSection(
+              delay: 0.05,
+              child: Text(
+                'Looking for a Flutter developer for your next project? I\'m open to remote roles, freelance contracts, and full-time positions.',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.dmSans(
+                  fontSize: 16,
+                  color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                  height: 1.7,
                 ),
               ),
-              const SizedBox(height: 16),
-              AnimatedSection(
-                delay: 0.05,
-                child: Text(
-                  'Looking for a Flutter developer for your next project? I\'m open to remote roles, freelance contracts, and full-time positions.',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.dmSans(
-                    fontSize: 16,
-                    color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
-                    height: 1.7,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 48),
+            ),
+            const SizedBox(height: 48),
 
-              // Form card
-              AnimatedSection(
-                delay: 0.1,
-                child: HoverCard(
-                  padding: const EdgeInsets.all(36),
-                  borderColor: AppColors.accent1,
-                  glowColor: AppColors.accent1,
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _Field(
-                              ctrl: _nameCtrl,
-                              label: 'Name',
-                              hint: 'Your name',
-                            ),
+            // Form card
+            AnimatedSection(
+              delay: 0.1,
+              child: HoverCard(
+                padding: const EdgeInsets.all(36),
+                borderColor: AppColors.accent1,
+                glowColor: AppColors.accent1,
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: _Field(
+                            ctrl: _nameCtrl,
+                            label: 'Name',
+                            hint: 'Your name',
                           ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: _Field(
-                              ctrl: _emailCtrl,
-                              label: 'Email',
-                              hint: 'your@email.com',
-                            ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _Field(
+                            ctrl: _emailCtrl,
+                            label: 'Email',
+                            hint: 'your@email.com',
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      _Field(
-                        ctrl: _msgCtrl,
-                        label: 'Message',
-                        hint: 'Tell me about your project...',
-                        maxLines: 5,
-                      ),
-                      const SizedBox(height: 24),
-                      _SubmitButton(sent: _sent, onTap: _submit),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 40),
-
-              // Social links
-              const AnimatedSection(
-                delay: 0.2,
-                child: Wrap(
-                  spacing: 16,
-                  runSpacing: 12,
-                  alignment: WrapAlignment.center,
-                  children: [
-                    _SocialChip(
-                      label: 'Email',
-                      icon: '✉',
-                      url: 'mailto:agboolaodunayo2016@gmail.com',
-                      color: AppColors.accent1,
+                        ),
+                      ],
                     ),
-                    _SocialChip(
-                      label: 'LinkedIn',
-                      icon: 'in',
-                      url:
-                          'https://www.linkedin.com/in/agboola-odunayo-1074a5257',
-                      color: AppColors.accent2,
+                    const SizedBox(height: 16),
+                    _Field(
+                      ctrl: _msgCtrl,
+                      label: 'Message',
+                      hint: 'Tell me about your project...',
+                      maxLines: 5,
                     ),
-                    _SocialChip(
-                      label: 'GitHub',
-                      icon: '</>',
-                      url: 'https://github.com/Azag3077',
-                      color: AppColors.accent3,
-                    ),
+                    const SizedBox(height: 24),
+                    _SubmitButton(sent: _sent, onTap: _submit),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 40),
+
+            // Social links
+            const AnimatedSection(
+              delay: 0.2,
+              child: Wrap(
+                spacing: 16,
+                runSpacing: 12,
+                alignment: WrapAlignment.center,
+                children: [
+                  _SocialChip(
+                    label: 'Email',
+                    icon: '✉',
+                    url: 'mailto:agboolaodunayo2016@gmail.com',
+                    color: AppColors.accent1,
+                  ),
+                  _SocialChip(
+                    label: 'LinkedIn',
+                    icon: 'in',
+                    url:
+                        'https://www.linkedin.com/in/agboola-odunayo-1074a5257',
+                    color: AppColors.accent2,
+                  ),
+                  _SocialChip(
+                    label: 'GitHub',
+                    icon: '</>',
+                    url: 'https://github.com/Azag3077',
+                    color: AppColors.accent3,
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

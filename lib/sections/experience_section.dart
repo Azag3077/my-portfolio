@@ -10,38 +10,31 @@ class ExperienceSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final w = MediaQuery.of(context).size.width;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bgColor = isDark ? AppColors.darkBg : AppColors.lightBg;
 
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 100, horizontal: w * 0.07),
-      color: bgColor,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const AnimatedSection(
-            child: SectionHeader(
-              eyebrow: 'Where I\'ve worked',
-              title: 'Experience',
-              eyebrowColor: AppColors.accent2,
+    return Column(
+      spacing: 20.0,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        const AnimatedSection(
+          child: SectionHeader(
+            eyebrow: 'Where I\'ve worked',
+            title: 'Experience',
+            eyebrowColor: AppColors.accent2,
+          ),
+        ),
+        const SizedBox(height: 56),
+        ...experiences.asMap().entries.map(
+          (e) => AnimatedSection(
+            delay: e.key * 0.1,
+            child: _ExperienceCard(
+              item: e.value,
+              color: AppColors.accents(e.key),
             ),
           ),
-          const SizedBox(height: 56),
-          ...experiences.asMap().entries.map(
-            (e) => Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: AnimatedSection(
-                delay: e.key * 0.1,
-                child: _ExperienceCard(
-                  item: e.value,
-                  color: AppColors.accents(e.key),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
