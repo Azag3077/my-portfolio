@@ -23,9 +23,6 @@ jobs:
           --dart-define=TEMPLATE_ID=${{ secrets.TEMPLATE_ID }}
           --dart-define=USER_ID=${{ secrets.USER_ID }}
 
-      - name: List build files
-        run: ls -R build/web
-
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25
         with:
