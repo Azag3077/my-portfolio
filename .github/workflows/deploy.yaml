@@ -1,0 +1,42 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.7'
+
+      - name: Build Web
+        run: |
+          flutter build web --release \
+            --dart-define=EMAIL_URL=${{ secrets.EMAIL_URL }} \
+            --dart-define=SERVICE_ID=${{ secrets.SERVICE_ID }} \
+            --dart-define=TEMPLATE_ID=${{ secrets.TEMPLATE_ID }} \
+            --dart-define=USER_ID=${{ secrets.USER_ID }}
+
+      - name: List build files
+        run: ls -R build/web
+
+      - name: Debug Vercel IDs
+        run: |
+          echo "VERCEL_ORG_ID = $VERCEL_ORG_ID"
+          echo "VERCEL_PROJECT_ID = $VERCEL_PROJECT_ID"
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: build/web
+          vercel-args: '--prod'
