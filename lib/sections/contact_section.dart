@@ -152,7 +152,7 @@ class _ContactSectionState extends State<ContactSection> {
                           child: _Field(
                             ctrl: _emailCtrl,
                             label: 'Email',
-                            hint: 'your@email.com dummy',
+                            hint: 'your@email.com',
                             textInputAction: .next,
                             keyboardType: .emailAddress,
                             autofillHints: const [AutofillHints.email],
@@ -297,7 +297,7 @@ class _FieldState extends State<_Field> {
               keyboardType: widget.keyboardType,
               autofillHints: widget.autofillHints,
               textCapitalization: widget.textCapitalization,
-              textInputAction: widget.textInputAction,
+              // textInputAction: widget.textInputAction,
               style: GoogleFonts.dmSans(
                 fontSize: 15.0.sp,
                 color: AppColors.of(context).text,
