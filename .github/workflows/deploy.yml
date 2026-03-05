@@ -26,11 +26,6 @@ jobs:
       - name: List build files
         run: ls -R build/web
 
-      - name: Debug Vercel IDs
-        run: |
-          echo "VERCEL_ORG_ID = $VERCEL_ORG_ID"
-          echo "VERCEL_PROJECT_ID = $VERCEL_PROJECT_ID"
-
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25
         with:
