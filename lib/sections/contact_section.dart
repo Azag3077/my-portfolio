@@ -453,7 +453,7 @@ Future<http.Response> sendRequest({
   const emailUrl = String.fromEnvironment(Environment.emailUrl);
   const serviceId = String.fromEnvironment(Environment.serviceId);
   const templateId = String.fromEnvironment(Environment.templateId);
-  const publicKey = String.fromEnvironment(Environment.publicKey);
+  const userId = String.fromEnvironment(Environment.userId);
 
   return await http.post(
     Uri.parse('$emailUrl/api/v1.0/email/send'),
@@ -461,7 +461,7 @@ Future<http.Response> sendRequest({
     body: jsonEncode({
       'service_id': serviceId,
       'template_id': templateId,
-      'user_id': publicKey,
+      'user_id': userId,
       'template_params': {
         'name': name,
         'email': email,
