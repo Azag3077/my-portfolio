@@ -267,7 +267,7 @@ class _FieldState extends State<_Field> {
 
             if (widget.isOptional)
               Text(
-                '(Optional)',
+                '(Optional )',
                 style: GoogleFonts.dmSans(
                   fontSize: 12.0.sp,
                   fontWeight: .w500,
