@@ -349,7 +349,7 @@ class _SubmitButtonState extends State<_SubmitButton> {
                 : AppColors.accent1,
             borderRadius: .circular(12.0.r),
             boxShadow: <BoxShadow>[
-              if (_hovered)
+              if (_hovered && !disabled)
                 BoxShadow(
                   color: AppColors.accent1.withValues(alpha: 0.4),
                   blurRadius: 30.0.r,
