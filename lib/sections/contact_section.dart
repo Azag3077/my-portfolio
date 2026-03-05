@@ -142,6 +142,9 @@ class _ContactSectionState extends State<ContactSection> {
                             label: 'Name',
                             hint: 'Your name',
                             keyboardType: .name,
+                            textInputAction: .next,
+                            textCapitalization: .words,
+                            autofillHints: const [AutofillHints.name],
                             isOptional: true,
                           ),
                         ),
@@ -149,8 +152,10 @@ class _ContactSectionState extends State<ContactSection> {
                           child: _Field(
                             ctrl: _emailCtrl,
                             label: 'Email',
-                            hint: 'your@email.com',
+                            hint: 'your@email.com dummy',
+                            textInputAction: .next,
                             keyboardType: .emailAddress,
+                            autofillHints: const [AutofillHints.email],
                           ),
                         ),
                       ],
@@ -161,6 +166,7 @@ class _ContactSectionState extends State<ContactSection> {
                       label: 'Message',
                       hint: 'Tell me about your project...',
                       maxLines: 5,
+                      textCapitalization: .sentences,
                     ),
                     24.0.verticalSpace,
                     _SubmitButton(
@@ -220,6 +226,9 @@ class _Field extends StatefulWidget {
     this.maxLines = 1,
     this.isOptional = false,
     this.keyboardType,
+    this.autofillHints,
+    this.textInputAction,
+    this.textCapitalization = .none,
   });
 
   final TextEditingController ctrl;
@@ -228,6 +237,9 @@ class _Field extends StatefulWidget {
   final int maxLines;
   final bool isOptional;
   final TextInputType? keyboardType;
+  final Iterable<String>? autofillHints;
+  final TextInputAction? textInputAction;
+  final TextCapitalization textCapitalization;
 
   @override
   State<_Field> createState() => _FieldState();
@@ -283,6 +295,9 @@ class _FieldState extends State<_Field> {
               controller: widget.ctrl,
               maxLines: widget.maxLines,
               keyboardType: widget.keyboardType,
+              autofillHints: widget.autofillHints,
+              textCapitalization: widget.textCapitalization,
+              textInputAction: widget.textInputAction,
               style: GoogleFonts.dmSans(
                 fontSize: 15.0.sp,
                 color: AppColors.of(context).text,
