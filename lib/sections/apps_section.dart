@@ -13,68 +13,54 @@ class AppsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: <Color>[
-            AppColors.of(context).bg,
-            Theme.of(context).brightness == Brightness.dark
-                ? const Color(0xFF0D0D16)
-                : const Color(0xFFEEECFF),
-          ],
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: .start,
-        children: <Widget>[
-          const AnimatedSection(
-            child: SectionHeader(
-              eyebrow: 'Live on the stores',
-              title: 'Featured Apps',
-              eyebrowColor: AppColors.accent1,
-            ),
+    return Column(
+      crossAxisAlignment: .start,
+      children: <Widget>[
+        const AnimatedSection(
+          child: SectionHeader(
+            eyebrow: 'Live on the stores',
+            title: 'Featured Apps',
+            eyebrowColor: AppColors.accent1,
           ),
-          56.0.horizontalSpace,
-          context.isMobile
-              ? Column(
-                  spacing: 20.0.h,
-                  children: projects
-                      .asMap()
-                      .entries
-                      .map(
-                        (e) => AnimatedSection(
+        ),
+        56.0.horizontalSpace,
+        context.isMobile || context.isTablet
+            ? Column(
+                spacing: 20.0.h,
+                children: projects
+                    .asMap()
+                    .entries
+                    .map(
+                      (e) => AnimatedSection(
+                        delay: e.key * 0.12,
+                        child: _AppCard(
+                          project: e.value,
+                          color: AppColors.accents(e.key),
+                        ),
+                      ),
+                    )
+                    .toList(),
+              )
+            : Row(
+                spacing: 20.0.w,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: projects
+                    .asMap()
+                    .entries
+                    .map(
+                      (e) => Expanded(
+                        child: AnimatedSection(
                           delay: e.key * 0.12,
                           child: _AppCard(
                             project: e.value,
                             color: AppColors.accents(e.key),
                           ),
                         ),
-                      )
-                      .toList(),
-                )
-              : Row(
-                  spacing: 20.0.w,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: projects
-                      .asMap()
-                      .entries
-                      .map(
-                        (e) => Expanded(
-                          child: AnimatedSection(
-                            delay: e.key * 0.12,
-                            child: _AppCard(
-                              project: e.value,
-                              color: AppColors.accents(e.key),
-                            ),
-                          ),
-                        ),
-                      )
-                      .toList(),
-                ),
-        ],
-      ),
+                      ),
+                    )
+                    .toList(),
+              ),
+      ],
     );
   }
 }
