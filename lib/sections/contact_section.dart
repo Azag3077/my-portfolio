@@ -90,7 +90,7 @@ class _ContactSectionState extends State<ContactSection> {
   }
 
   Future<void> _submit() async {
-    if (!_vmVN.value.valid) return;
+    if (!_vmVN.value.valid || _vmVN.value.sent) return;
 
     final name = _nameCtrl.text.trim();
     final email = _emailCtrl.text.trim();
@@ -405,7 +405,7 @@ class _SubmitButton extends StatelessWidget {
     final disabled = sending || !valid;
 
     return GestureDetector(
-      onTap: disabled || sent ? null : onTap,
+      onTap: disabled ? null : onTap,
       child: MouseRegionBuilder(
         builder: (context, hovered) {
           return AnimatedContainer(
