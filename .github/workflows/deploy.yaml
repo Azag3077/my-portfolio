@@ -8,20 +8,18 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-#          flutter-version: '3.38.7'
-          channel: stable
+          flutter-version: '3.38.7'
+          cache: true
 
-      - name: Print flutter version1
-        run: echo "Azag flutter version"
-
-      - name: Print flutter version2
-        run: flutter --version
+      - name: Install dependencies
+        run: flutter pub get
 
       - name: Build Web
         run: |
@@ -30,22 +28,6 @@ jobs:
             --dart-define=SERVICE_ID=${{ secrets.SERVICE_ID }} \
             --dart-define=TEMPLATE_ID=${{ secrets.TEMPLATE_ID }} \
             --dart-define=USER_ID=${{ secrets.USER_ID }}
-
-      - name: List build files
-        run: ls -R build/web
-
-      - name: Debug Vercel IDs
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: |
-          echo "VERCEL_ORG_ID = $VERCEL_ORG_ID"
-          echo "VERCEL_PROJECT_ID = $VERCEL_PROJECT_ID"
-
-      - name: Debug Vercel IDs
-        run: |
-          echo "VERCEL_ORG_ID = $VERCEL_ORG_ID"
-          echo "VERCEL_PROJECT_ID = $VERCEL_PROJECT_ID"
 
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25

@@ -8,6 +8,7 @@ import 'sections/experience_section.dart';
 import 'sections/hero_section.dart';
 import 'sections/skills_section.dart';
 import 'theme/theme.dart';
+import 'widgets/widgets.dart';
 
 void main() => runApp(const PortfolioApp());
 
@@ -19,19 +20,30 @@ class PortfolioApp extends StatefulWidget {
 }
 
 class _PortfolioAppState extends State<PortfolioApp> {
-  bool _isDark = true;
+  final _isDarkVN = ValueNotifier(true);
+
+  @override
+  void dispose() {
+    _isDarkVN.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Odunayo Agboola — Flutter Developer',
-      theme: AppTheme.light(),
-      darkTheme: AppTheme.dark(),
-      themeMode: _isDark ? ThemeMode.dark : ThemeMode.light,
-      home: PortfolioHome(
-        isDark: _isDark,
-        onToggleTheme: () => setState(() => _isDark = !_isDark),
-      ),
+    return ValueListenableBuilder<bool>(
+      valueListenable: _isDarkVN,
+      builder: (context, isDark, child) {
+        return MaterialApp(
+          title: 'Odunayo Agboola — Flutter Developer',
+          theme: AppTheme.light(),
+          darkTheme: AppTheme.dark(),
+          themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+          home: PortfolioHome(
+            isDark: isDark,
+            onToggleTheme: () => _isDarkVN.value = !isDark,
+          ),
+        );
+      },
     );
   }
 }
@@ -52,7 +64,7 @@ class PortfolioHome extends StatefulWidget {
 
 class _PortfolioHomeState extends State<PortfolioHome> {
   final _scrollCtrl = ScrollController();
-  String _activeSection = 'About';
+  final _activeSectionVN = ValueNotifier('About');
 
   // Section keys for scroll-to
   final _heroKey = GlobalKey();
@@ -71,12 +83,15 @@ class _PortfolioHomeState extends State<PortfolioHome> {
   void dispose() {
     _scrollCtrl.removeListener(_onScroll);
     _scrollCtrl.dispose();
+    _activeSectionVN.dispose();
     super.dispose();
   }
 
   void _onScroll() => _updateActiveSection();
 
   void _updateActiveSection() {
+    if (!mounted) return;
+
     final sections = [
       (_heroKey, 'About'),
       (_appsKey, 'Apps'),
@@ -91,8 +106,9 @@ class _PortfolioHomeState extends State<PortfolioHome> {
         if (box != null) {
           final pos = box.localToGlobal(Offset.zero);
           if (pos.dy <= 100) {
-            if (_activeSection != s.$2) {
-              setState(() => _activeSection = s.$2);
+            final activeSection = _activeSectionVN.value;
+            if (activeSection != s.$2) {
+              _activeSectionVN.value = s.$2;
             }
             break;
           }
@@ -137,22 +153,27 @@ class _PortfolioHomeState extends State<PortfolioHome> {
         surfaceTintColor: navBg,
         shadowColor: AppColors.of(context).border,
         actions: <Widget>[
-          Row(
-            spacing: 28.0.w,
-            children: <Widget>[
-              if (!context.isMobile)
-                ...navItems.map(
-                  (item) => _NavItem(
-                    label: item.$1,
-                    active: _activeSection == item.$1,
-                    onTap: () => _scrollTo(item.$2),
-                  ),
-                ),
+          ValueListenableBuilder<String>(
+            valueListenable: _activeSectionVN,
+            builder: (context, activeSection, child) {
+              return Row(
+                spacing: 28.0.w,
+                children: <Widget>[
+                  if (!context.isMobile)
+                    ...navItems.map(
+                      (item) => _NavItem(
+                        label: item.$1,
+                        active: activeSection == item.$1,
+                        onTap: () => _scrollTo(item.$2),
+                      ),
+                    ),
 
-              // Theme toggle
-              _ThemeToggle(onToggle: widget.onToggleTheme),
-              24.0.horizontalSpace,
-            ],
+                  // Theme toggle
+                  _ThemeToggle(onToggle: widget.onToggleTheme),
+                  24.0.horizontalSpace,
+                ],
+              );
+            },
           ),
         ],
       ),
@@ -167,6 +188,7 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                 vertical: 120.0.h,
                 horizontal: .07.sw(context),
               ),
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               child: Column(
                 spacing: 120.0.h,
                 children: <Widget>[
@@ -214,7 +236,7 @@ class _LogoText extends StatelessWidget {
   }
 }
 
-class _NavItem extends StatefulWidget {
+class _NavItem extends StatelessWidget {
   const _NavItem({
     required this.label,
     required this.active,
@@ -226,33 +248,25 @@ class _NavItem extends StatefulWidget {
   final VoidCallback onTap;
 
   @override
-  State<_NavItem> createState() => _NavItemState();
-}
-
-class _NavItemState extends State<_NavItem> {
-  bool _hovered = false;
-
-  @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedDefaultTextStyle(
-          duration: const Duration(milliseconds: 200),
-          style: GoogleFonts.dmSans(
-            fontSize: 14.0.sp,
-            fontWeight: .w500,
-            color: widget.active
-                ? AppColors.accent1
-                : _hovered
-                ? AppColors.of(context).text
-                : AppColors.of(context).muted,
-          ),
-          child: Text(widget.label),
-        ),
+    return GestureDetector(
+      onTap: onTap,
+      child: MouseRegionBuilder(
+        builder: (context, hovered) {
+          return AnimatedDefaultTextStyle(
+            duration: const Duration(milliseconds: 200),
+            style: GoogleFonts.dmSans(
+              fontSize: 14.0.sp,
+              fontWeight: .w500,
+              color: active
+                  ? AppColors.accent1
+                  : hovered
+                  ? AppColors.of(context).text
+                  : AppColors.of(context).muted,
+            ),
+            child: Text(label),
+          );
+        },
       ),
     );
   }

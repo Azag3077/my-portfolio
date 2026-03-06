@@ -12,6 +12,7 @@ import '../constants/environment.dart';
 import '../extensions/extensions.dart';
 import '../theme/theme.dart';
 import '../widgets.dart';
+import '../widgets/widgets.dart';
 
 class ContactSection extends StatefulWidget {
   const ContactSection({super.key});
@@ -20,13 +21,44 @@ class ContactSection extends StatefulWidget {
   State<ContactSection> createState() => _ContactSectionState();
 }
 
+class ContactSectionViewModel {
+  const ContactSectionViewModel({
+    this.sent = false,
+    this.valid = false,
+    this.sending = false,
+  });
+
+  final bool sent;
+  final bool valid;
+  final bool sending;
+
+  ContactSectionViewModel copyWith({bool? sent, bool? valid, bool? sending}) {
+    return ContactSectionViewModel(
+      sent: sent ?? this.sent,
+      valid: valid ?? this.valid,
+      sending: sending ?? this.sending,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ContactSectionViewModel &&
+        other.sent == sent &&
+        other.valid == valid &&
+        other.sending == sending;
+  }
+
+  @override
+  int get hashCode => sent.hashCode ^ valid.hashCode ^ sending.hashCode;
+}
+
 class _ContactSectionState extends State<ContactSection> {
   final _nameCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
   final _msgCtrl = TextEditingController();
-  bool _sent = false;
-  bool _valid = false;
-  bool _sending = false;
+  final _vmVN = ValueNotifier(const ContactSectionViewModel());
 
   @override
   void initState() {
@@ -45,6 +77,7 @@ class _ContactSectionState extends State<ContactSection> {
     _nameCtrl.dispose();
     _emailCtrl.dispose();
     _msgCtrl.dispose();
+    _vmVN.dispose();
     super.dispose();
   }
 
@@ -53,18 +86,18 @@ class _ContactSectionState extends State<ContactSection> {
     final message = _msgCtrl.text.trim();
     final valid = email.isEmail && message.isNotEmpty;
 
-    setState(() => _valid = valid);
+    _vmVN.value = _vmVN.value.copyWith(valid: valid);
   }
 
   Future<void> _submit() async {
-    if (!_valid) return;
+    if (!_vmVN.value.valid) return;
 
     final name = _nameCtrl.text.trim();
     final email = _emailCtrl.text.trim();
     final message = _msgCtrl.text.trim();
 
     try {
-      setState(() => _sending = true);
+      _vmVN.value = _vmVN.value.copyWith(sending: true);
       final response = await sendRequest(
         name: name.isEmpty ? 'Anonymous' : name,
         email: email,
@@ -76,17 +109,31 @@ class _ContactSectionState extends State<ContactSection> {
         _emailCtrl.clear();
         _msgCtrl.clear();
 
-        setState(() => _sent = true);
-        await Future.delayed(const Duration(seconds: 4));
+        if (!mounted) return;
+        _vmVN.value = _vmVN.value.copyWith(sent: true);
+        showSnackBar(context, message: 'Message sent successfully!');
 
-        if (mounted) {
-          setState(() => _sent = false);
-        }
+        await Future.delayed(const Duration(seconds: 4));
+        if (!mounted) return;
+        _vmVN.value = _vmVN.value.copyWith(sent: false);
+      } else {
+        if (!mounted) return;
+        showSnackBar(
+          context,
+          message: 'Failed to send message. Please try again.',
+          isError: true,
+        );
       }
     } catch (_) {
+      if (!mounted) return;
+      showSnackBar(
+        context,
+        message: 'Failed to send message. Please try again.',
+        isError: true,
+      );
     } finally {
       if (mounted) {
-        setState(() => _sending = false);
+        _vmVN.value = _vmVN.value.copyWith(sending: false);
       }
     }
   }
@@ -169,11 +216,16 @@ class _ContactSectionState extends State<ContactSection> {
                       textCapitalization: .sentences,
                     ),
                     24.0.verticalSpace,
-                    _SubmitButton(
-                      sent: _sent,
-                      valid: _valid,
-                      sending: _sending,
-                      onTap: _submit,
+                    ValueListenableBuilder<ContactSectionViewModel>(
+                      valueListenable: _vmVN,
+                      builder: (context, value, _) {
+                        return _SubmitButton(
+                          sent: value.sent,
+                          valid: value.valid,
+                          sending: value.sending,
+                          onTap: _submit,
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -246,7 +298,15 @@ class _Field extends StatefulWidget {
 }
 
 class _FieldState extends State<_Field> {
-  bool _focused = false;
+  final _focusedVN = ValueNotifier(false);
+
+  @override
+  void dispose() {
+    _focusedVN.dispose();
+    super.dispose();
+  }
+
+  void _onFocusChange(bool value) => _focusedVN.value = value;
 
   @override
   Widget build(BuildContext context) {
@@ -267,7 +327,7 @@ class _FieldState extends State<_Field> {
 
             if (widget.isOptional)
               Text(
-                '(Optional )',
+                '(Optional)',
                 style: GoogleFonts.dmSans(
                   fontSize: 12.0.sp,
                   fontWeight: .w500,
@@ -278,43 +338,48 @@ class _FieldState extends State<_Field> {
         ),
         8.0.verticalSpace,
         Focus(
-          onFocusChange: (v) => setState(() => _focused = v),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            decoration: BoxDecoration(
-              color: AppColors.of(context).card,
-              borderRadius: BorderRadius.circular(12.0.r),
-              border: Border.all(
-                color: _focused
-                    ? AppColors.accent1
-                    : AppColors.of(context).border,
-                width: 1.5.r,
-              ),
-            ),
-            child: TextFormField(
-              controller: widget.ctrl,
-              maxLines: widget.maxLines,
-              keyboardType: widget.keyboardType,
-              autofillHints: widget.autofillHints,
-              textCapitalization: widget.textCapitalization,
-              // textInputAction: widget.textInputAction,
-              style: GoogleFonts.dmSans(
-                fontSize: 15.0.sp,
-                color: AppColors.of(context).text,
-              ),
-              decoration: InputDecoration(
-                hintText: widget.hint,
-                hintStyle: GoogleFonts.dmSans(
-                  fontSize: 15.0.sp,
-                  color: AppColors.of(context).muted,
+          onFocusChange: _onFocusChange,
+          child: ValueListenableBuilder<bool>(
+            valueListenable: _focusedVN,
+            builder: (context, focused, _) {
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 500),
+                decoration: BoxDecoration(
+                  color: AppColors.of(context).card,
+                  borderRadius: .circular(12.0.r),
+                  border: .all(
+                    width: 1.5.r,
+                    color: focused
+                        ? AppColors.accent1
+                        : AppColors.of(context).border,
+                  ),
                 ),
-                border: .none,
-                contentPadding: .symmetric(
-                  horizontal: 16.0.w,
-                  vertical: 14.0.h,
+                child: TextFormField(
+                  controller: widget.ctrl,
+                  maxLines: widget.maxLines,
+                  keyboardType: widget.keyboardType,
+                  autofillHints: widget.autofillHints,
+                  textCapitalization: widget.textCapitalization,
+                  textInputAction: widget.textInputAction,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 15.0.sp,
+                    color: AppColors.of(context).text,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: widget.hint,
+                    hintStyle: GoogleFonts.dmSans(
+                      fontSize: 15.0.sp,
+                      color: AppColors.of(context).muted,
+                    ),
+                    contentPadding: .symmetric(
+                      horizontal: 16.0.w,
+                      vertical: 14.0.h,
+                    ),
+                    border: .none,
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ),
       ],
@@ -322,7 +387,7 @@ class _FieldState extends State<_Field> {
   }
 }
 
-class _SubmitButton extends StatefulWidget {
+class _SubmitButton extends StatelessWidget {
   const _SubmitButton({
     required this.sent,
     required this.valid,
@@ -336,65 +401,57 @@ class _SubmitButton extends StatefulWidget {
   final VoidCallback onTap;
 
   @override
-  State<_SubmitButton> createState() => _SubmitButtonState();
-}
-
-class _SubmitButtonState extends State<_SubmitButton> {
-  bool _hovered = false;
-
-  @override
   Widget build(BuildContext context) {
-    final disabled = widget.sending || !widget.valid;
+    final disabled = sending || !valid;
 
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTap: disabled || widget.sent ? null : widget.onTap,
-        child: AnimatedContainer(
-          width: .infinity,
-          padding: .symmetric(vertical: 16.0.w),
-          duration: const Duration(milliseconds: 250),
-          decoration: BoxDecoration(
-            color: disabled
-                ? Theme.of(context).disabledColor
-                : widget.sent
-                ? AppColors.accent2
-                : AppColors.accent1,
-            borderRadius: .circular(12.0.r),
-            boxShadow: <BoxShadow>[
-              if (_hovered && !disabled)
-                BoxShadow(
-                  color: AppColors.accent1.withValues(alpha: 0.4),
-                  blurRadius: 30.0.r,
-                  offset: Offset(0, 8.0.h),
-                ),
-            ],
-          ),
-          transform: _hovered
-              ? Matrix4.translationValues(0, -2, 0)
-              : Matrix4.identity(),
-          child: Text(
-            widget.sent
-                ? '✓ Message Sent!'
-                : widget.sending
-                ? 'Sending Message...'
-                : 'Send Message →',
-            textAlign: .center,
-            style: GoogleFonts.dmSans(
-              fontSize: 16.0.sp,
-              fontWeight: .w700,
-              color: Colors.white,
+    return GestureDetector(
+      onTap: disabled || sent ? null : onTap,
+      child: MouseRegionBuilder(
+        builder: (context, hovered) {
+          return AnimatedContainer(
+            width: .infinity,
+            padding: .symmetric(vertical: 16.0.w),
+            duration: const Duration(milliseconds: 250),
+            decoration: BoxDecoration(
+              color: disabled
+                  ? Theme.of(context).disabledColor
+                  : sent
+                  ? AppColors.accent2
+                  : AppColors.accent1,
+              borderRadius: .circular(12.0.r),
+              boxShadow: <BoxShadow>[
+                if (hovered && !disabled)
+                  BoxShadow(
+                    color: AppColors.accent1.withValues(alpha: 0.4),
+                    blurRadius: 30.0.r,
+                    offset: Offset(0, 8.0.h),
+                  ),
+              ],
             ),
-          ),
-        ),
+            transform: hovered
+                ? Matrix4.translationValues(0, -2, 0)
+                : Matrix4.identity(),
+            child: Text(
+              sent
+                  ? '✓ Message Sent!'
+                  : sending
+                  ? 'Sending Message...'
+                  : 'Send Message →',
+              textAlign: .center,
+              style: GoogleFonts.dmSans(
+                fontSize: 16.0.sp,
+                fontWeight: .w700,
+                color: Colors.white,
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 }
 
-class _SocialChip extends StatefulWidget {
+class _SocialChip extends StatelessWidget {
   const _SocialChip({
     required this.label,
     required this.icon,
@@ -408,53 +465,45 @@ class _SocialChip extends StatefulWidget {
   final Color color;
 
   @override
-  State<_SocialChip> createState() => _SocialChipState();
-}
-
-class _SocialChipState extends State<_SocialChip> {
-  bool _hovered = false;
-
-  @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTap: () => launchUrl(Uri.parse(widget.url)),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          padding: .symmetric(horizontal: 20.0.w, vertical: 10.0.h),
-          decoration: BoxDecoration(
-            color: AppColors.of(context).card,
-            borderRadius: BorderRadius.circular(50.0.r),
-            border: Border.all(
-              color: _hovered ? widget.color : AppColors.of(context).border,
-              width: 1.5.r,
+    return GestureDetector(
+      onTap: () => launchUrl(Uri.parse(url)),
+      child: MouseRegionBuilder(
+        builder: (context, hovered) {
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            padding: .symmetric(horizontal: 20.0.w, vertical: 10.0.h),
+            decoration: BoxDecoration(
+              color: AppColors.of(context).card,
+              borderRadius: .circular(50.0.r),
+              border: Border.all(
+                color: hovered ? color : AppColors.of(context).border,
+                width: 1.5.r,
+              ),
             ),
-          ),
-          child: Row(
-            mainAxisSize: .min,
-            children: <Widget>[
-              Text(
-                widget.icon,
-                style: TextStyle(
-                  color: _hovered ? widget.color : AppColors.of(context).muted,
-                  fontSize: 15.0.sp,
+            child: Row(
+              mainAxisSize: .min,
+              children: <Widget>[
+                Text(
+                  icon,
+                  style: TextStyle(
+                    color: hovered ? color : AppColors.of(context).muted,
+                    fontSize: 15.0.sp,
+                  ),
                 ),
-              ),
-              8.0.verticalSpace,
-              Text(
-                widget.label,
-                style: GoogleFonts.dmSans(
-                  fontSize: 14.0.sp,
-                  fontWeight: .w600,
-                  color: _hovered ? widget.color : AppColors.of(context).muted,
+                8.0.verticalSpace,
+                Text(
+                  label,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 14.0.sp,
+                    fontWeight: .w600,
+                    color: hovered ? color : AppColors.of(context).muted,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -485,4 +534,69 @@ Future<http.Response> sendRequest({
       },
     }),
   );
+}
+
+void showSnackBar(
+  BuildContext context, {
+  required String message,
+  bool isError = false,
+}) {
+  final overlay = Overlay.of(context);
+
+  late OverlayEntry entry;
+
+  entry = OverlayEntry(
+    builder: (_) => Positioned(
+      bottom: 40,
+      left: 0,
+      right: 0,
+      child: Center(
+        child: Material(
+          color: Colors.transparent,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            padding: .symmetric(horizontal: 20..w, vertical: 14.0.r),
+            constraints: BoxConstraints(maxWidth: 420.0.w),
+            decoration: BoxDecoration(
+              color: isError
+                  ? const Color(0xffef4444)
+                  : const Color(0xff22c55e),
+              borderRadius: .circular(14.0.r),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  blurRadius: 20.0.r,
+                  color: Colors.black.withValues(alpha: .15),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: .min,
+              children: <Widget>[
+                Icon(
+                  isError ? Icons.error_outline : Icons.check_circle_outline,
+                  color: Colors.white,
+                ),
+                SizedBox(width: 12.0.w),
+                Flexible(
+                  child: Text(
+                    message,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: .w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  overlay.insert(entry);
+
+  Future.delayed(const Duration(seconds: 3), () {
+    entry.remove();
+  });
 }

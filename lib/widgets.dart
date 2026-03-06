@@ -5,6 +5,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 import 'extensions/extensions.dart';
 import 'theme/theme.dart';
+import 'widgets/widgets.dart';
 
 class AnimatedSection extends StatelessWidget {
   const AnimatedSection({super.key, required this.child, this.delay = 0});
@@ -111,13 +112,13 @@ class HoverCard extends StatefulWidget {
 
 class _HoverCardState extends State<HoverCard>
     with SingleTickerProviderStateMixin {
-  bool _hovered = false;
   late AnimationController _ctrl;
   late Animation<double> _elevation;
 
   @override
   void initState() {
     super.initState();
+
     _ctrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
@@ -136,56 +137,51 @@ class _HoverCardState extends State<HoverCard>
     final borderRadius = widget.borderRadius ?? 20.0.r;
     final padding = widget.padding ?? EdgeInsets.all(28.0.r);
 
-    return MouseRegion(
-      onEnter: (_) {
-        setState(() => _hovered = true);
-        _ctrl.forward();
-      },
-      onExit: (_) {
-        setState(() => _hovered = false);
-        _ctrl.reverse();
-      },
-      cursor: widget.onTap != null
-          ? SystemMouseCursors.click
-          : SystemMouseCursors.basic,
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedBuilder(
-          animation: _elevation,
-          builder: (_, child) => Transform.translate(
-            offset: Offset(0, -6.0.h * _elevation.value),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              padding: padding,
-              decoration: BoxDecoration(
-                color: _hovered
-                    ? AppColors.of(context).cardHover
-                    : AppColors.of(context).bg,
-                borderRadius: BorderRadius.circular(borderRadius),
-                border: Border.all(
-                  color: _hovered
-                      ? (widget.borderColor ?? AppColors.accent1).withValues(
-                          alpha: 0.5,
-                        )
-                      : AppColors.of(context).border,
-                  width: 1.5.r,
-                ),
-                boxShadow: [
-                  if (_hovered)
-                    BoxShadow(
-                      color: (widget.glowColor ?? AppColors.accent1).withValues(
-                        alpha: 0.15,
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: AnimatedBuilder(
+        animation: _elevation,
+        builder: (_, child) => Transform.translate(
+          offset: Offset(0, -6.0.h * _elevation.value),
+          child: MouseRegionBuilder(
+            onEnter: (_) => _ctrl.forward(),
+            onExit: (_) => _ctrl.reverse(),
+            cursor: widget.onTap != null
+                ? SystemMouseCursors.click
+                : SystemMouseCursors.basic,
+            builder: (context, hovered) {
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: padding,
+                decoration: BoxDecoration(
+                  color: hovered
+                      ? AppColors.of(context).cardHover
+                      : AppColors.of(context).bg,
+                  borderRadius: BorderRadius.circular(borderRadius),
+                  border: Border.all(
+                    color: hovered
+                        ? (widget.borderColor ?? AppColors.accent1).withValues(
+                            alpha: 0.5,
+                          )
+                        : AppColors.of(context).border,
+                    width: 1.5.r,
+                  ),
+                  boxShadow: [
+                    if (hovered)
+                      BoxShadow(
+                        color: (widget.glowColor ?? AppColors.accent1)
+                            .withValues(alpha: 0.15),
+                        blurRadius: 40.0.r,
+                        offset: Offset(0, 16.r),
                       ),
-                      blurRadius: 40.0.r,
-                      offset: Offset(0, 16.r),
-                    ),
-                ],
-              ),
-              child: child,
-            ),
+                  ],
+                ),
+                child: child,
+              );
+            },
           ),
-          child: widget.child,
         ),
+        child: widget.child,
       ),
     );
   }
@@ -328,7 +324,7 @@ class StatItem extends StatelessWidget {
 }
 
 // ─── HOVER LINK BUTTON ───────────────────────────────────
-class HoverLinkButton extends StatefulWidget {
+class HoverLinkButton extends StatelessWidget {
   const HoverLinkButton({
     super.key,
     required this.label,
@@ -341,44 +337,36 @@ class HoverLinkButton extends StatefulWidget {
   final Color color;
 
   @override
-  State<HoverLinkButton> createState() => _HoverLinkButtonState();
-}
-
-class _HoverLinkButtonState extends State<HoverLinkButton> {
-  bool _hovered = false;
-
-  @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTap: () async {
-          // url_launcher handled in parent
+    return GestureDetector(
+      onTap: () async {
+        // url_launcher handled in parent
+      },
+      child: MouseRegionBuilder(
+        builder: (context, hovered) {
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            padding: .symmetric(horizontal: 14.0.w, vertical: 7.0.h),
+            decoration: BoxDecoration(
+              color: hovered
+                  ? color.withValues(alpha: 0.2)
+                  : Colors.transparent,
+              border: Border.all(
+                color: color.withValues(alpha: 0.4),
+                width: 1.5.r,
+              ),
+              borderRadius: BorderRadius.circular(8.0.r),
+            ),
+            child: Text(
+              '↗ $label',
+              style: GoogleFonts.dmSans(
+                fontSize: 13.0.sp,
+                fontWeight: .w700,
+                color: color,
+              ),
+            ),
+          );
         },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          padding: .symmetric(horizontal: 14.0.w, vertical: 7.0.h),
-          decoration: BoxDecoration(
-            color: _hovered
-                ? widget.color.withValues(alpha: 0.2)
-                : Colors.transparent,
-            border: Border.all(
-              color: widget.color.withValues(alpha: 0.4),
-              width: 1.5.r,
-            ),
-            borderRadius: BorderRadius.circular(8.0.r),
-          ),
-          child: Text(
-            '↗ ${widget.label}',
-            style: GoogleFonts.dmSans(
-              fontSize: 13.0.sp,
-              fontWeight: .w700,
-              color: widget.color,
-            ),
-          ),
-        ),
       ),
     );
   }

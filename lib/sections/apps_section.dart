@@ -6,6 +6,7 @@ import '../data.dart';
 import '../extensions/extensions.dart';
 import '../theme/theme.dart';
 import '../widgets.dart';
+import '../widgets/mouse_region.dart';
 
 class AppsSection extends StatelessWidget {
   const AppsSection({super.key});
@@ -200,84 +201,72 @@ class _AppCard extends StatelessWidget {
   }
 }
 
-class _LinkChip extends StatefulWidget {
+class _LinkChip extends StatelessWidget {
   final StoreLink link;
   final Color color;
 
   const _LinkChip({required this.link, required this.color});
 
-  @override
-  State<_LinkChip> createState() => _LinkChipState();
-}
-
-class _LinkChipState extends State<_LinkChip> {
-  bool _hovered = false;
-
   void _openUrl(String url) => launchUrl(Uri.parse(url)).ignore();
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: PopupMenuButton<int>(
-        onSelected: (index) =>
-            _openUrl(widget.link.variants.elementAt(index).url),
-        position: PopupMenuPosition.under,
-        offset: Offset(0, 8.0.h),
-        tooltip: '',
-        color: AppColors.of(context).cardHover,
-        itemBuilder: (context) {
-          return widget.link.variants.asMap().entries.map((entry) {
-            return PopupMenuItem<int>(
-              value: entry.key,
-              child: Text(entry.value.label),
-            );
-          }).toList();
-        },
-        child: GestureDetector(
-          onTap: widget.link.url == null
-              ? null
-              : () => _openUrl(widget.link.url!),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            padding: EdgeInsets.symmetric(horizontal: 14.0.w, vertical: 7.0.h),
-            decoration: BoxDecoration(
-              color: _hovered
-                  ? widget.color.withValues(alpha: 0.2)
-                  : Colors.transparent,
-              border: Border.all(
-                color: widget.color.withValues(alpha: 0.4),
-                width: 1.5.w,
+    return PopupMenuButton<int>(
+      onSelected: (index) => _openUrl(link.variants.elementAt(index).url),
+      position: PopupMenuPosition.under,
+      offset: Offset(0, 8.0.h),
+      tooltip: '',
+      color: AppColors.of(context).cardHover,
+      itemBuilder: (context) {
+        return link.variants.asMap().entries.map((entry) {
+          return PopupMenuItem<int>(
+            value: entry.key,
+            child: Text(entry.value.label),
+          );
+        }).toList();
+      },
+      child: GestureDetector(
+        onTap: link.url == null ? null : () => _openUrl(link.url!),
+        child: MouseRegionBuilder(
+          builder: (context, hovered) {
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              padding: EdgeInsets.symmetric(
+                horizontal: 14.0.w,
+                vertical: 7.0.h,
               ),
-              borderRadius: BorderRadius.circular(8.0.r),
-            ),
-            child: Row(
-              spacing: 6.0.w,
-              mainAxisSize: .min,
-              children: <Widget>[
-                if (widget.link.variants.isEmpty)
-                  Icon(Icons.arrow_outward, size: 16.0.sp, color: widget.color),
-
-                Text(
-                  widget.link.store.label,
-                  style: GoogleFonts.dmSans(
-                    fontSize: 12.0.sp,
-                    fontWeight: .w700,
-                    color: widget.color,
-                  ),
+              decoration: BoxDecoration(
+                color: hovered
+                    ? color.withValues(alpha: 0.2)
+                    : Colors.transparent,
+                border: Border.all(
+                  color: color.withValues(alpha: 0.4),
+                  width: 1.5.w,
                 ),
+                borderRadius: BorderRadius.circular(8.0.r),
+              ),
+              child: Row(
+                spacing: 6.0.w,
+                mainAxisSize: .min,
+                children: <Widget>[
+                  if (link.variants.isEmpty)
+                    Icon(Icons.arrow_outward, size: 16.0.sp, color: color),
 
-                if (widget.link.variants.isNotEmpty)
-                  Icon(
-                    Icons.arrow_drop_down,
-                    color: widget.color,
-                    size: 18.0.sp,
+                  Text(
+                    link.store.label,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 12.0.sp,
+                      fontWeight: .w700,
+                      color: color,
+                    ),
                   ),
-              ],
-            ),
-          ),
+
+                  if (link.variants.isNotEmpty)
+                    Icon(Icons.arrow_drop_down, color: color, size: 18.0.sp),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

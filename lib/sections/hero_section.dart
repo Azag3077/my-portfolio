@@ -7,6 +7,7 @@ import '../data.dart';
 import '../extensions/extensions.dart';
 import '../theme/theme.dart';
 import '../widgets.dart';
+import '../widgets/widgets.dart';
 
 class HeroSection extends StatefulWidget {
   const HeroSection({
@@ -30,7 +31,7 @@ class _HeroSectionState extends State<HeroSection>
     'App Creator',
     'Problem Solver',
   ];
-  int _wordIndex = 0;
+  final _wordIndexVN = ValueNotifier(0);
   late AnimationController _wordCtrl;
   late Animation<double> _wordOpacity;
   late Animation<Offset> _wordSlide;
@@ -58,7 +59,8 @@ class _HeroSectionState extends State<HeroSection>
     _timer = Timer.periodic(const Duration(seconds: 3), (_) {
       _wordCtrl.reverse().then((_) {
         if (mounted) {
-          setState(() => _wordIndex = (_wordIndex + 1) % _words.length);
+          final wordIndex = _wordIndexVN.value;
+          _wordIndexVN.value = (wordIndex + 1) % _words.length;
           _wordCtrl.forward();
         }
       });
@@ -79,6 +81,7 @@ class _HeroSectionState extends State<HeroSection>
     _timer.cancel();
     _wordCtrl.dispose();
     _blobCtrl.dispose();
+    _wordIndexVN.dispose();
     super.dispose();
   }
 
@@ -180,15 +183,23 @@ class _HeroSectionState extends State<HeroSection>
                         opacity: _wordOpacity,
                         child: SlideTransition(
                           position: _wordSlide,
-                          child: GradientText(
-                            _words[_wordIndex],
-                            style: GoogleFonts.syne(
-                              fontSize: (context.isDesktop ? 42 : 26).sp,
-                              fontWeight: .w700,
-                            ),
-                            gradient: const LinearGradient(
-                              colors: [AppColors.accent2, AppColors.accent3],
-                            ),
+                          child: ValueListenableBuilder<int>(
+                            valueListenable: _wordIndexVN,
+                            builder: (context, index, child) {
+                              return GradientText(
+                                _words.elementAt(index),
+                                style: GoogleFonts.syne(
+                                  fontSize: (context.isDesktop ? 42 : 26).sp,
+                                  fontWeight: .w700,
+                                ),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    AppColors.accent2,
+                                    AppColors.accent3,
+                                  ],
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -285,7 +296,7 @@ class _Blob extends StatelessWidget {
   }
 }
 
-class _CtaButton extends StatefulWidget {
+class _CtaButton extends StatelessWidget {
   const _CtaButton({
     required this.label,
     required this.filled,
@@ -299,69 +310,45 @@ class _CtaButton extends StatefulWidget {
   final VoidCallback onTap;
 
   @override
-  State<_CtaButton> createState() => _CtaButtonState();
-}
-
-class _CtaButtonState extends State<_CtaButton> {
-  final _hoveredValueNotifier = ValueNotifier<bool>(false);
-
-  @override
-  void dispose() {
-    _hoveredValueNotifier.dispose();
-    super.dispose();
-  }
-
-  void _updateHovered(bool value) => _hoveredValueNotifier.value = value;
-
-  @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => _updateHovered(true),
-      onExit: (_) => _updateHovered(false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: ValueListenableBuilder<bool>(
-          valueListenable: _hoveredValueNotifier,
-          builder: (context, hovered, child) {
-            return AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              padding: EdgeInsets.symmetric(
-                horizontal: 32.0.w,
-                vertical: 14.0.h,
+    return GestureDetector(
+      onTap: onTap,
+      child: MouseRegionBuilder(
+        builder: (context, hovered) {
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: EdgeInsets.symmetric(horizontal: 32.0.w, vertical: 14.0.h),
+            decoration: BoxDecoration(
+              color: filled ? color : Colors.transparent,
+              borderRadius: BorderRadius.circular(50),
+              border: Border.all(
+                color: filled
+                    ? Colors.transparent
+                    : color.withValues(alpha: 0.4),
+                width: 1.5,
               ),
-              decoration: BoxDecoration(
-                color: widget.filled ? widget.color : Colors.transparent,
-                borderRadius: BorderRadius.circular(50),
-                border: Border.all(
-                  color: widget.filled
-                      ? Colors.transparent
-                      : widget.color.withValues(alpha: 0.4),
-                  width: 1.5,
-                ),
-                boxShadow: <BoxShadow>[
-                  if (widget.filled && hovered)
-                    BoxShadow(
-                      blurRadius: 30,
-                      offset: const Offset(0, 8),
-                      color: widget.color.withValues(alpha: 0.4),
-                    ),
-                ],
+              boxShadow: <BoxShadow>[
+                if (filled && hovered)
+                  BoxShadow(
+                    blurRadius: 30,
+                    offset: const Offset(0, 8),
+                    color: color.withValues(alpha: 0.4),
+                  ),
+              ],
+            ),
+            transform: hovered
+                ? Matrix4.translationValues(0, -2, 0)
+                : Matrix4.identity(),
+            child: Text(
+              label,
+              style: GoogleFonts.dmSans(
+                fontSize: 15.0.sp,
+                fontWeight: .w700,
+                color: filled ? Colors.white : color,
               ),
-              transform: hovered
-                  ? Matrix4.translationValues(0, -2, 0)
-                  : Matrix4.identity(),
-              child: Text(
-                widget.label,
-                style: GoogleFonts.dmSans(
-                  fontSize: 15.0.sp,
-                  fontWeight: .w700,
-                  color: widget.filled ? Colors.white : widget.color,
-                ),
-              ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
