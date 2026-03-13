@@ -5,3 +5,8 @@ class ImageAssets {
   static const github = '$_root/github.svg';
   static const linkedin = '$_root/linkedin.svg';
 }
+
+class DocAssets {
+  static const _root = 'assets/svgs';
+  static const cv = '$_root/cv.pdf';
+}
