@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../constants/breakpoints.dart';
-import '../constants/environment.dart';
+import '../constants/constants.dart';
 import '../extensions/extensions.dart';
 import '../theme/theme.dart';
 import '../widgets.dart';
@@ -243,22 +243,28 @@ class _ContactSectionState extends State<ContactSection> {
                 children: const <Widget>[
                   _SocialChip(
                     label: 'Email',
-                    icon: '✉',
+                    icon: ImageAssets.envelope,
                     url: 'mailto:agboolaodunayo2016@gmail.com',
                     color: AppColors.accent1,
                   ),
                   _SocialChip(
                     label: 'LinkedIn',
-                    icon: 'in',
+                    icon: ImageAssets.linkedin,
                     url:
                         'https://www.linkedin.com/in/agboola-odunayo-1074a5257',
                     color: AppColors.accent2,
                   ),
                   _SocialChip(
                     label: 'GitHub',
-                    icon: '</>',
+                    icon: ImageAssets.github,
                     url: 'https://github.com/Azag3077',
                     color: AppColors.accent3,
+                  ),
+                  _SocialChip(
+                    label: 'Resume',
+                    icon: ImageAssets.file,
+                    url: DocAssets.cv,
+                    color: AppColors.accent4,
                   ),
                 ],
               ),
@@ -464,10 +470,12 @@ class _SocialChip extends StatelessWidget {
   final String url;
   final Color color;
 
+  void _onTap() => launchUrl(Uri.parse(url));
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => launchUrl(Uri.parse(url)),
+      onTap: _onTap,
       child: MouseRegionBuilder(
         builder: (context, hovered) {
           return AnimatedContainer(
@@ -484,11 +492,12 @@ class _SocialChip extends StatelessWidget {
             child: Row(
               mainAxisSize: .min,
               children: <Widget>[
-                Text(
+                SvgPicture.asset(
                   icon,
-                  style: TextStyle(
-                    color: hovered ? color : AppColors.of(context).muted,
-                    fontSize: 15.0.sp,
+                  height: 24.0.sp,
+                  colorFilter: ColorFilter.mode(
+                    hovered ? color : AppColors.of(context).muted,
+                    BlendMode.srcIn,
                   ),
                 ),
                 8.0.verticalSpace,
