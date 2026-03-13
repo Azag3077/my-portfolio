@@ -136,8 +136,6 @@ class _PortfolioHomeState extends State<PortfolioHome> {
 
   void _onResumeTap() => launchUrl(Uri.parse(DocAssets.cv));
 
-  void _onResumeTap1(String url) => launchUrl(Uri.parse(url));
-
   @override
   Widget build(BuildContext context) {
     final bg = AppColors.of(context).bg;
@@ -197,28 +195,6 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                                   ),
                                   child: const Text('↓ Resumé'),
                                 ),
-                                ...[
-                                  'cv.pdf',
-                                  '/cv.pdf',
-                                  'cv_full.pdf',
-                                  '/cv_full.pdf',
-                                  'Agboola-Odunayo-CV.pdf',
-                                  '/Agboola-Odunayo-CV.pdf',
-                                ].map((e) {
-                                  return OutlinedButton(
-                                    onPressed: () => _onResumeTap1(e),
-                                    style: OutlinedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: .circular(6.0.r),
-                                      ),
-                                      side: BorderSide(
-                                        color: AppColors.of(context).border,
-                                        width: 2.0.r,
-                                      ),
-                                    ),
-                                    child: Text(e),
-                                  );
-                                }),
                               ],
                             ),
                           );
