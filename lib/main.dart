@@ -155,51 +155,58 @@ class _PortfolioHomeState extends State<PortfolioHome> {
         backgroundColor: navBg,
         surfaceTintColor: navBg,
         shadowColor: AppColors.of(context).border,
+        actionsPadding: .symmetric(horizontal: 24.0.w),
         actions: <Widget>[
-          24.0.horizontalSpace,
-          const _LogoText(),
-          24.0.horizontalSpace,
-          if (!context.isMobile)
-            Flexible(
-              child: ValueListenableBuilder<String>(
-                valueListenable: _activeSectionVN,
-                builder: (context, activeSection, child) {
-                  return SingleChildScrollView(
-                    scrollDirection: .horizontal,
-                    child: Row(
-                      spacing: 28.0.w,
-                      children: <Widget>[
-                        ...navItems.map(
-                          (item) => _NavItem(
-                            label: item.$1,
-                            active: activeSection == item.$1,
-                            onTap: () => _scrollTo(item.$2),
-                          ),
-                        ),
-                        OutlinedButton(
-                          onPressed: _onResumeTap,
-                          style: OutlinedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: .circular(6.0.r),
+          Expanded(
+            child: Row(
+              spacing: 24.0.w,
+              children: <Widget>[
+                const _LogoText(),
+                if (!context.isMobile)
+                  Expanded(
+                    child: Align(
+                      alignment: .centerRight,
+                      child: ValueListenableBuilder<String>(
+                        valueListenable: _activeSectionVN,
+                        builder: (context, activeSection, child) {
+                          return SingleChildScrollView(
+                            scrollDirection: .horizontal,
+                            padding: .symmetric(horizontal: 8.0.w),
+                            child: Row(
+                              spacing: 28.0.w,
+                              children: <Widget>[
+                                ...navItems.map(
+                                  (item) => _NavItem(
+                                    label: item.$1,
+                                    active: activeSection == item.$1,
+                                    onTap: () => _scrollTo(item.$2),
+                                  ),
+                                ),
+                                OutlinedButton(
+                                  onPressed: _onResumeTap,
+                                  style: OutlinedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: .circular(6.0.r),
+                                    ),
+                                    side: BorderSide(
+                                      color: AppColors.of(context).border,
+                                      width: 2.0.r,
+                                    ),
+                                  ),
+                                  child: const Text('↓ Resumé'),
+                                ),
+                              ],
                             ),
-                            side: BorderSide(
-                              color: AppColors.of(context).border,
-                              width: 2.0.r,
-                            ),
-                          ),
-                          child: const Text('↓ Resumé'),
-                        ),
-                        .0.horizontalSpace,
-                      ],
+                          );
+                        },
+                      ),
                     ),
-                  );
-                },
-              ),
-            ),
+                  ),
 
-          // Theme toggle
-          _ThemeToggle(onToggle: widget.onToggleTheme),
-          24.0.horizontalSpace,
+                _ThemeToggle(onToggle: widget.onToggleTheme),
+              ],
+            ),
+          ),
         ],
       ),
       extendBodyBehindAppBar: true,
