@@ -490,6 +490,7 @@ class _SocialChip extends StatelessWidget {
               ),
             ),
             child: Row(
+              spacing: 8.0.w,
               mainAxisSize: .min,
               children: <Widget>[
                 SvgPicture.asset(
@@ -500,7 +501,6 @@ class _SocialChip extends StatelessWidget {
                     BlendMode.srcIn,
                   ),
                 ),
-                8.0.verticalSpace,
                 Text(
                   label,
                   style: GoogleFonts.dmSans(
