@@ -187,7 +187,7 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                               width: 2.0.r,
                             ),
                           ),
-                          child: const Text('↓ Resume'),
+                          child: const Text('↓ Resumé'),
                         ),
                         .0.horizontalSpace,
                       ],

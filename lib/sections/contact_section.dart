@@ -261,7 +261,7 @@ class _ContactSectionState extends State<ContactSection> {
                     color: AppColors.accent3,
                   ),
                   _SocialChip(
-                    label: 'Resume',
+                    label: 'Resumé',
                     icon: ImageAssets.file,
                     url: DocAssets.cv,
                     color: AppColors.accent4,

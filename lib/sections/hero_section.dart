@@ -248,7 +248,7 @@ class _HeroSectionState extends State<HeroSection>
                           onTap: widget.onGetInTouchTap,
                         ),
                         _CtaButton(
-                          label: '↓ Resume',
+                          label: '↓ Resumé',
                           filled: false,
                           color: AppColors.accent3,
                           onTap: widget.onResumeTap,
