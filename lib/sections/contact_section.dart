@@ -113,7 +113,7 @@ class _ContactSectionState extends State<ContactSection> {
         _vmVN.value = _vmVN.value.copyWith(sent: true);
         showSnackBar(context, message: 'Message sent successfully!');
 
-        await Future.delayed(const Duration(seconds: 4));
+        await Future.delayed(const Duration(milliseconds: 1500));
         if (!mounted) return;
         _vmVN.value = _vmVN.value.copyWith(sent: false);
       } else {
@@ -419,10 +419,10 @@ class _SubmitButton extends StatelessWidget {
             padding: .symmetric(vertical: 16.0.w),
             duration: const Duration(milliseconds: 250),
             decoration: BoxDecoration(
-              color: disabled
-                  ? Theme.of(context).disabledColor
-                  : sent
+              color: sent
                   ? AppColors.accent2
+                  : disabled
+                  ? Theme.of(context).disabledColor
                   : AppColors.accent1,
               borderRadius: .circular(12.0.r),
               boxShadow: <BoxShadow>[
