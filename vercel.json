@@ -4,6 +4,10 @@
     {
       "source": "/(.*)",
       "destination": "/index.html"
+    },
+    {
+      "source": "/cv.pdf",
+      "destination": "/assets/assets/docs/cv.pdf"
     }
   ]
 }
