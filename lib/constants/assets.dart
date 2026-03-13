@@ -7,6 +7,6 @@ class ImageAssets {
 }
 
 class DocAssets {
-  static const _root = 'assets/svgs';
+  static const _root = 'assets/docs';
   static const cv = '$_root/cv.pdf';
 }
