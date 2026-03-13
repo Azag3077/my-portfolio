@@ -226,35 +226,32 @@ class _HeroSectionState extends State<HeroSection>
                       ),
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  40.0.verticalSpace,
 
                   // CTA buttons
-                  AnimatedSection(
-                    delay: 0.25,
-                    child: Wrap(
-                      spacing: 16.0.w,
-                      runSpacing: 12.0.h,
-                      children: <Widget>[
-                        _CtaButton(
-                          label: 'View My Apps ↓',
-                          filled: true,
-                          color: AppColors.accent1,
-                          onTap: widget.onViewAppsTap,
-                        ),
-                        _CtaButton(
-                          label: 'Get in Touch',
-                          filled: false,
-                          color: AppColors.accent2,
-                          onTap: widget.onGetInTouchTap,
-                        ),
-                        _CtaButton(
-                          label: '↓ Resumé',
-                          filled: false,
-                          color: AppColors.accent3,
-                          onTap: widget.onResumeTap,
-                        ),
-                      ],
-                    ),
+                  Wrap(
+                    spacing: 16.0.w,
+                    runSpacing: 12.0.h,
+                    children: <Widget>[
+                      _CtaButton(
+                        label: 'View My Apps ↓',
+                        filled: true,
+                        color: AppColors.accent1,
+                        onTap: widget.onViewAppsTap,
+                      ),
+                      _CtaButton(
+                        label: 'Get in Touch',
+                        filled: false,
+                        color: AppColors.accent2,
+                        onTap: widget.onGetInTouchTap,
+                      ),
+                      _CtaButton(
+                        label: '↓ Resumé',
+                        filled: false,
+                        color: AppColors.accent3,
+                        onTap: widget.onResumeTap,
+                      ),
+                    ],
                   ),
                   60.0.verticalSpace,
 
