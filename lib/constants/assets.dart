@@ -11,4 +11,5 @@ class ImageAssets {
 class DocAssets {
   static const _root = kReleaseMode ? '' : 'assets/docs';
   static const cv = '$_root/cv.pdf';
+  static const cv1 = '$_root/Agboola-Odunayo-CV.pdf';
 }
