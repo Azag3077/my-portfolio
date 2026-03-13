@@ -1,5 +1,5 @@
 name: portfolio
-description: "My Portfolio Website"
+description: "Odunayo Agboola Portfolio Website"
 publish_to: 'none'
 version: 1.0.0+2
 
@@ -25,5 +25,4 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/docs/
     - assets/svgs/
