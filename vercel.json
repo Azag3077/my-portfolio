@@ -1,12 +1,9 @@
 {
+  "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/cv.pdf",
-      "destination": "/assets/assets/docs/cv.pdf"
-    },
-    {
-      "source": "/cv_full.pdf",
-      "destination": "https://odunayodev.vercel.app/assets/assets/docs/cv.pdf"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
