@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 class ImageAssets {
   static const _root = 'assets/svgs';
   static const envelope = '$_root/envelope.svg';
@@ -9,7 +7,5 @@ class ImageAssets {
 }
 
 class DocAssets {
-  static const _root = kReleaseMode ? '' : 'assets/docs';
-  static const cv = '$_root/cv.pdf';
-  static const cv1 = '$_root/Agboola-Odunayo-CV.pdf';
+  static const cv = 'Odunayo-Agboola-CV.pdf';
 }
