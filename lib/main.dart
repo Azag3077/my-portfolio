@@ -152,33 +152,54 @@ class _PortfolioHomeState extends State<PortfolioHome> {
     return Scaffold(
       backgroundColor: bg,
       appBar: AppBar(
-        title: const _LogoText(),
         backgroundColor: navBg,
         surfaceTintColor: navBg,
         shadowColor: AppColors.of(context).border,
         actions: <Widget>[
-          ValueListenableBuilder<String>(
-            valueListenable: _activeSectionVN,
-            builder: (context, activeSection, child) {
-              return Row(
-                spacing: 28.0.w,
-                children: <Widget>[
-                  if (!context.isMobile)
-                    ...navItems.map(
-                      (item) => _NavItem(
-                        label: item.$1,
-                        active: activeSection == item.$1,
-                        onTap: () => _scrollTo(item.$2),
-                      ),
+          24.0.horizontalSpace,
+          const _LogoText(),
+          24.0.horizontalSpace,
+          if (!context.isMobile)
+            Flexible(
+              child: ValueListenableBuilder<String>(
+                valueListenable: _activeSectionVN,
+                builder: (context, activeSection, child) {
+                  return SingleChildScrollView(
+                    scrollDirection: .horizontal,
+                    child: Row(
+                      spacing: 28.0.w,
+                      children: <Widget>[
+                        ...navItems.map(
+                          (item) => _NavItem(
+                            label: item.$1,
+                            active: activeSection == item.$1,
+                            onTap: () => _scrollTo(item.$2),
+                          ),
+                        ),
+                        OutlinedButton(
+                          onPressed: _onResumeTap,
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: .circular(6.0.r),
+                            ),
+                            side: BorderSide(
+                              color: AppColors.of(context).border,
+                              width: 2.0.r,
+                            ),
+                          ),
+                          child: const Text('↓ Resume'),
+                        ),
+                        .0.horizontalSpace,
+                      ],
                     ),
+                  );
+                },
+              ),
+            ),
 
-                  // Theme toggle
-                  _ThemeToggle(onToggle: widget.onToggleTheme),
-                  24.0.horizontalSpace,
-                ],
-              );
-            },
-          ),
+          // Theme toggle
+          _ThemeToggle(onToggle: widget.onToggleTheme),
+          24.0.horizontalSpace,
         ],
       ),
       extendBodyBehindAppBar: true,
