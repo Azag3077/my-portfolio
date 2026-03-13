@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import 'constants/assets.dart';
 import 'extensions/extensions.dart';
 import 'sections/apps_section.dart';
 import 'sections/contact_section.dart';
@@ -132,6 +134,8 @@ class _PortfolioHomeState extends State<PortfolioHome> {
     }
   }
 
+  void _onResumeTap() => launchUrl(Uri.parse(DocAssets.cv));
+
   @override
   Widget build(BuildContext context) {
     final bg = AppColors.of(context).bg;
@@ -196,6 +200,7 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                     key: _heroKey,
                     onViewAppsTap: () => _scrollTo(_appsKey),
                     onGetInTouchTap: () => _scrollTo(_contactKey),
+                    onResumeTap: _onResumeTap,
                   ),
                   AppsSection(key: _appsKey),
                   SkillsSection(key: _skillsKey),
