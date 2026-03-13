@@ -14,9 +14,11 @@ class HeroSection extends StatefulWidget {
     super.key,
     required this.onViewAppsTap,
     required this.onGetInTouchTap,
+    required this.onResumeTap,
   });
 
   final VoidCallback onViewAppsTap;
+  final VoidCallback onResumeTap;
   final VoidCallback onGetInTouchTap;
 
   @override
@@ -244,6 +246,12 @@ class _HeroSectionState extends State<HeroSection>
                           filled: false,
                           color: AppColors.accent2,
                           onTap: widget.onGetInTouchTap,
+                        ),
+                        _CtaButton(
+                          label: '↓ Resume',
+                          filled: false,
+                          color: AppColors.accent3,
+                          onTap: widget.onResumeTap,
                         ),
                       ],
                     ),
