@@ -1,8 +1,8 @@
 {
-  "rewrites": [
+  "routes": [
     {
-      "source": "/cv.pdf",
-      "destination": "/assets/assets/docs/cv.pdf"
+      "src": "/cv.pdf",
+      "dest": "/assets/assets/docs/cv.pdf"
     }
   ]
 }

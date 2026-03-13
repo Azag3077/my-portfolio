@@ -203,7 +203,7 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                     ),
                   ),
 
-                _ThemeToggle(onToggle: widget.onToggleTheme),
+                // _ThemeToggle(onToggle: widget.onToggleTheme),
               ],
             ),
           ),
